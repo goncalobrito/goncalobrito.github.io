@@ -2,8 +2,19 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor Semanal de Entregas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Entregas Semanal</title>
+
+    <!-- METAS PARA FUNCIONAR COMO APP REAL (SEM BARRA DO NAVEGADOR) -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Entregas">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- MANIFEST EMBUTIDO -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Gestor%20de%20Entregas%22%2C%22short_name%22%3A%22Entregas%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%7D">
+
     <style>
         :root {
             --bg-color: #0f172a;
@@ -18,136 +29,138 @@
             --text-muted: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 40px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 30px; }
 
-        /* Navbar */
+        /* Navbar Otimizada para Mobile */
         .navbar {
             background-color: #1e293b;
             border-bottom: 1px solid var(--card-border);
-            padding: 12px 20px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
-        .navbar-brand { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .navbar-actions { display: flex; gap: 8px; align-items: center; }
+        .navbar-brand { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .navbar-actions { display: flex; gap: 6px; align-items: center; }
 
         .nav-btn {
             background: #334155;
             color: #f8fafc;
             border: 1px solid var(--card-border);
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            transition: 0.2s;
+            gap: 4px;
+            transition: 0.15s;
         }
-        .nav-btn:hover { background: #475569; }
+        .nav-btn:active { transform: scale(0.95); }
         .nav-btn-sync { border-color: #3b82f6; color: #93c5fd; }
         .nav-btn-history { border-color: var(--accent-purple); color: #c4b5fd; background: rgba(139, 92, 246, 0.15); }
-        .nav-btn-history:hover { background: var(--accent-purple); color: #fff; }
         .nav-btn-reset { border-color: var(--accent-danger); background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
-        .nav-btn-reset:hover { background: var(--accent-danger); color: #fff; }
 
-        /* Dropdown da Engrenagem */
-        .dropdown { position: relative; display: inline-block; }
+        /* Dropdown */
+        .dropdown { position: relative; }
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 110%;
+            top: 115%;
             background-color: #1e293b;
             min-width: 190px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
             border: 1px solid var(--card-border);
-            border-radius: 10px;
+            border-radius: 12px;
             z-index: 100;
             overflow: hidden;
         }
-        .dropdown-content.show { display: block; animation: fadeIn 0.15s ease-in; }
+        .dropdown-content.show { display: block; }
         .dropdown-item {
             color: var(--text-main);
-            padding: 10px 14px;
+            padding: 12px 14px;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
-            text-decoration: none;
-            transition: 0.2s;
+            font-size: 0.9rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .dropdown-item:last-child { border-bottom: none; }
-        .dropdown-item:hover { background-color: #334155; color: #fff; }
+        .dropdown-item:active { background: #334155; }
 
-        /* Container */
-        .container { max-width: 1200px; margin: 20px auto 0 auto; padding: 0 16px; }
+        /* Content Container */
+        .container { max-width: 1200px; margin: 12px auto 0 auto; padding: 0 12px; }
 
-        /* Resumo Global */
+        /* Resumo Global Mobile (3 Colunas Compactas) */
         .resumo-global {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
         }
-        .box-global { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; }
+        .box-global {
+            padding: 10px 6px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
         .box-lucro { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-orange); color: #fbbf24; }
         .box-adar { background: rgba(236, 72, 153, 0.15); border: 1px solid var(--accent-pink); color: #f472b6; }
         .box-total { background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue); color: #60a5fa; }
-        .box-global span { display: block; font-size: 1.4rem; margin-top: 5px; }
+        .box-global span { display: block; font-size: 1.1rem; margin-top: 4px; }
 
-        /* 7 Cards Grid */
+        /* Grid de Cards */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        @media (min-width: 600px) {
+            .cards-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 900px) {
+            .cards-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
         }
 
         .day-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            gap: 10px;
         }
 
         .day-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
         }
-        .day-title { font-size: 1.1rem; font-weight: bold; }
-        .count-tag { font-size: 0.8rem; background: #334155; padding: 2px 8px; border-radius: 12px; color: var(--text-muted); }
+        .day-title { font-size: 1rem; font-weight: 700; }
+        .count-tag { font-size: 0.75rem; background: #0f172a; border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 10px; color: var(--text-muted); }
 
         .day-stats {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             background: #0f172a;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            padding: 10px 6px;
+            border-radius: 10px;
+            text-align: center;
         }
-        .stat-item { text-align: center; }
-        .stat-item small { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
-        .stat-item b { font-size: 1rem; }
+        .stat-item small { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-item b { font-size: 0.95rem; }
 
-        /* Botões */
-        .day-actions { display: flex; gap: 10px; }
+        /* Botões de Ação do Card */
+        .day-actions { display: flex; gap: 8px; }
         .btn-action {
             background: #334155;
             color: #fff;
@@ -158,63 +171,65 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
         }
-        .btn-action:hover { background: #475569; }
-        .btn-plus { flex: 2; background: #2563eb; font-weight: bold; }
-        .btn-plus:hover { background: #1d4ed8; }
+        .btn-action:active { transform: scale(0.97); }
+        .btn-plus { flex: 3; background: #2563eb; color: #fff; }
         .btn-eye { flex: 1; font-size: 1.2rem; }
 
-        /* Modais */
+        /* Modais Otimizados para Ecrã de Telemóvel */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end; /* Abre por baixo estilo gaveta em mobile */
             z-index: 1000;
-            padding: 20px;
         }
+        @media (min-width: 600px) {
+            .modal-overlay { align-items: center; padding: 20px; }
+        }
+
         .modal-overlay.active { display: flex; }
 
         .modal-card {
             background: #1e293b;
             border: 1px solid #475569;
-            border-radius: 18px;
+            border-radius: 20px 20px 0 0;
             width: 100%;
             max-width: 580px;
-            max-height: 85vh;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
+        @media (min-width: 600px) {
+            .modal-card { border-radius: 18px; animation: zoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        }
         .modal-card-large { max-width: 750px; }
 
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.7); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-header {
-            padding: 16px 20px;
+            padding: 16px;
             background: #0f172a;
             border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .modal-header h3 { font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-        
+        .modal-header h3 { font-size: 1.1rem; }
         .btn-modal-close {
             background: #334155;
             color: #fff;
@@ -228,52 +243,52 @@
             justify-content: center;
             font-size: 1rem;
         }
-        .btn-modal-close:hover { background: #ef4444; }
-        .modal-body { padding: 20px; overflow-y: auto; }
 
-        /* Formulários */
+        .modal-body { padding: 16px; overflow-y: auto; }
+
+        /* Formulários Mobile */
         .form-group { display: flex; flex-direction: column; gap: 12px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .full-width { grid-column: span 2; }
-        label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; display: block; }
         input {
             width: 100%;
             background: #0f172a;
             border: 1px solid var(--card-border);
             color: #fff;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            -webkit-appearance: none;
         }
         input:focus { outline: none; border-color: var(--accent-blue); }
-        
+
         .btn-submit {
             background: #10b981;
             color: #fff;
             border: none;
-            padding: 12px;
+            padding: 14px;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1rem;
-            margin-top: 8px;
+            margin-top: 6px;
         }
-        .btn-submit:hover { background: #059669; }
+        .btn-submit:active { background: #059669; }
 
-        /* Tabelas */
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.9rem; }
-        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--card-border); }
-        th { color: var(--text-muted); background: #0f172a; }
-        .btn-tbl { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
-        .btn-tbl-edit { background: #eab308; color: #000; font-weight: bold; }
-        .btn-tbl-del { background: #ef4444; color: #fff; margin-left: 4px; font-weight: bold; }
+        /* Tabelas com Scroll Horizontal Seguro */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 380px; font-size: 0.85rem; }
+        th, td { padding: 10px 6px; text-align: center; border-bottom: 1px solid var(--card-border); }
+        th { color: var(--text-muted); background: #0f172a; font-size: 0.75rem; }
+        .btn-tbl { padding: 6px 10px; border: none; border-radius: 6px; font-size: 0.85rem; }
+        .btn-tbl-edit { background: #eab308; color: #000; }
+        .btn-tbl-del { background: #ef4444; color: #fff; margin-left: 4px; }
 
-        /* Histórico Cloud List */
         .history-list-item {
             background: #0f172a;
             border: 1px solid var(--card-border);
-            padding: 12px 16px;
+            padding: 12px;
             border-radius: 10px;
             margin-bottom: 8px;
             display: flex;
@@ -284,31 +299,22 @@
 </head>
 <body>
 
-    <!-- Input escondido para importar ficheiro local -->
     <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importarFicheiroLocal(event)">
 
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="navbar-brand">🛵 <span>Entregas Semanal</span></div>
+        <div class="navbar-brand">🛵 <span>Entregas</span></div>
         <div class="navbar-actions">
-            <!-- Botão de Refresh / Sincronizar -->
-            <button class="nav-btn nav-btn-sync" onclick="sincronizarComGithub()" title="Sincronizar com o GitHub">🔄</button>
-            <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Histórico</button>
-            <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹 Fechar Semana</button>
+            <button class="nav-btn nav-btn-sync" onclick="sincronizarComGithub()" title="Sincronizar">🔄</button>
+            <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Semanas</button>
+            <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹</button>
             
-            <!-- Dropdown da Engrenagem -->
             <div class="dropdown">
                 <button class="nav-btn" onclick="toggleDropdown()" id="btnDropdown">⚙️</button>
                 <div class="dropdown-content" id="dropdownMenu">
-                    <div class="dropdown-item" onclick="abrirModalConfig(); fecharDropdown();">
-                        🔑 API Key GitHub
-                    </div>
-                    <div class="dropdown-item" onclick="document.getElementById('fileInput').click(); fecharDropdown();">
-                        📂 Importar (.json)
-                    </div>
-                    <div class="dropdown-item" onclick="exportarFicheiroLocal(); fecharDropdown();">
-                        💾 Exportar (.json)
-                    </div>
+                    <div class="dropdown-item" onclick="abrirModalConfig(); fecharDropdown();">🔑 API GitHub</div>
+                    <div class="dropdown-item" onclick="document.getElementById('fileInput').click(); fecharDropdown();">📂 Importar</div>
+                    <div class="dropdown-item" onclick="exportarFicheiroLocal(); fecharDropdown();">💾 Exportar</div>
                 </div>
             </div>
         </div>
@@ -316,10 +322,11 @@
 
     <!-- CONTEÚDO PRINCIPAL -->
     <div class="container">
+        <!-- 3 Balões compactos no topo -->
         <div class="resumo-global">
-            <div class="box-global box-lucro">Meu Lucro Total <span id="gloLucro">0.00€</span></div>
-            <div class="box-global box-adar">Valor a Dar Total <span id="gloAdar">0.00€</span></div>
-            <div class="box-global box-total">Balanço Geral <span id="gloTotal">0.00€</span></div>
+            <div class="box-global box-lucro">Lucro <span id="gloLucro">0.00€</span></div>
+            <div class="box-global box-adar">A Dar <span id="gloAdar">0.00€</span></div>
+            <div class="box-global box-total">Total <span id="gloTotal">0.00€</span></div>
         </div>
 
         <div class="cards-grid" id="cardsGrid"></div>
@@ -329,7 +336,7 @@
     <div class="modal-overlay" id="modalConfigOverlay" onclick="fecharModalFora(event, 'modalConfigOverlay')">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>⚙️ Configuração da API do GitHub</h3>
+                <h3>⚙️ Configuração GitHub</h3>
                 <button class="btn-modal-close" onclick="fecharModalConfig()">✕</button>
             </div>
             <div class="modal-body">
@@ -343,7 +350,7 @@
                         <input type="text" id="cfgRepo" value="goncalobrito.github.io">
                     </div>
                     <div>
-                        <label>Personal Access Token (PAT)</label>
+                        <label>Token (PAT)</label>
                         <input type="password" id="cfgToken" placeholder="github_pat_... ou ghp_...">
                     </div>
                     <button class="btn-submit" onclick="guardarConfiguracoes()">Guardar e Conectar</button>
@@ -352,7 +359,7 @@
         </div>
     </div>
 
-    <!-- MODAL FORMULÁRIO -->
+    <!-- MODAL FORMULÁRIO (ADD / EDIT) -->
     <div class="modal-overlay" id="modalFormOverlay" onclick="fecharModalFora(event, 'modalFormOverlay')">
         <div class="modal-card">
             <div class="modal-header">
@@ -362,22 +369,22 @@
             <div class="modal-body">
                 <div class="form-group">
                     <div>
-                        <label>Nome do Local / Restaurante</label>
-                        <input type="text" id="formLocal" placeholder="ex: mc, divinal, padaria">
+                        <label>Local / Restaurante</label>
+                        <input type="text" id="formLocal" placeholder="ex: Mc, Divinal, Padaria">
                     </div>
                     <div class="form-row">
                         <div>
-                            <label>Valor Pago pelo Cliente (€)</label>
-                            <input type="number" step="0.01" id="formPagou" placeholder="0.00">
+                            <label>Pagou (€)</label>
+                            <input type="number" step="0.01" inputmode="decimal" id="formPagou" placeholder="0.00">
                         </div>
                         <div>
-                            <label>Valor que Paguei no Local (€)</label>
-                            <input type="number" step="0.01" id="formPaguei" placeholder="0.00">
+                            <label>Paguei (€)</label>
+                            <input type="number" step="0.01" inputmode="decimal" id="formPaguei" placeholder="0.00">
                         </div>
                     </div>
                     <div>
-                        <label>Taxa de Entrega (Meu Lucro) (€)</label>
-                        <input type="number" step="0.01" id="formTaxa" placeholder="0.00">
+                        <label>Taxa Entrega / Lucro (€)</label>
+                        <input type="number" step="0.01" inputmode="decimal" id="formTaxa" placeholder="0.00">
                     </div>
                     <button class="btn-submit" id="btnSubmitForm" onclick="submeterFormulario()">Guardar</button>
                 </div>
@@ -396,18 +403,18 @@
         </div>
     </div>
 
-    <!-- MODAL HISTÓRICO DE SEMANAS (GITHUB) -->
+    <!-- MODAL HISTÓRICO DE SEMANAS -->
     <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
         <div class="modal-card modal-card-large">
             <div class="modal-header">
-                <h3>📜 Semanas Guardadas no GitHub</h3>
+                <h3>📜 Semanas no GitHub</h3>
                 <button class="btn-modal-close" onclick="fecharModalHistorico()">✕</button>
             </div>
             <div class="modal-body">
                 <div id="historyListArea">
-                    <p style="color:var(--text-muted); text-align: center;">A carregar semanas do GitHub...</p>
+                    <p style="color:var(--text-muted); text-align: center;">A carregar histórico...</p>
                 </div>
-                <div id="historyDetailArea" style="display:none; margin-top: 15px;"></div>
+                <div id="historyDetailArea" style="display:none;"></div>
             </div>
         </div>
     </div>
@@ -422,27 +429,18 @@
         let diaAtivo = null;
         let idEdicao = null;
 
-        // Configuração Pré-Definida para o teu Repositório
         let ghConfig = JSON.parse(localStorage.getItem('gh_config')) || {
             user: 'goncalobrito',
             repo: 'goncalobrito.github.io',
             token: ''
         };
 
-        /* --- DROPDOWN ENGRENAGEM --- */
-        function toggleDropdown() {
-            document.getElementById('dropdownMenu').classList.toggle('show');
-        }
+        function toggleDropdown() { document.getElementById('dropdownMenu').classList.toggle('show'); }
+        function fecharDropdown() { document.getElementById('dropdownMenu').classList.remove('show'); }
 
-        function fecharDropdown() {
-            document.getElementById('dropdownMenu').classList.remove('show');
-        }
-
-        window.onclick = function(event) {
-            if (!event.target.matches('#btnDropdown')) {
-                fecharDropdown();
-            }
-        }
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) fecharDropdown();
+        });
 
         function calcularTotais(lista = registos) {
             let lucro = 0, adar = 0;
@@ -503,17 +501,14 @@
             localStorage.setItem('entregas_v2', JSON.stringify(registos));
         }
 
-        /* --- API GITHUB --- */
+        /* --- GITHUB API --- */
         async function salvarFicheiroNoGithub(caminho, dadosObj, commitMsg) {
             if (!ghConfig.token || !ghConfig.user || !ghConfig.repo) return false;
 
             const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${caminho}`;
-            
             let sha = null;
             try {
-                const resExist = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${ghConfig.token}` }
-                });
+                const resExist = await fetch(url, { headers: { 'Authorization': `Bearer ${ghConfig.token}` } });
                 if (resExist.ok) {
                     const dataExist = await resExist.json();
                     sha = dataExist.sha;
@@ -521,18 +516,11 @@
             } catch (e) {}
 
             const conteudoBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(dadosObj, null, 2))));
-            const body = {
-                message: commitMsg,
-                content: conteudoBase64,
-                ...(sha && { sha })
-            };
+            const body = { message: commitMsg, content: conteudoBase64, ...(sha && { sha }) };
 
             const response = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${ghConfig.token}`,
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Authorization': `Bearer ${ghConfig.token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
 
@@ -547,9 +535,7 @@
 
             try {
                 const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/pedeja/dados_atuais.json`;
-                const res = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${ghConfig.token}` }
-                });
+                const res = await fetch(url, { headers: { 'Authorization': `Bearer ${ghConfig.token}` } });
 
                 if (res.ok) {
                     const data = await res.json();
@@ -557,13 +543,13 @@
                     if (Array.isArray(conteudo)) {
                         registos = conteudo;
                         renderizar();
-                        if (!silencioso) alert("Sincronizado com o GitHub com sucesso!");
+                        if (!silencioso) alert("Sincronizado com o GitHub!");
                     }
                 } else if (registos.length > 0) {
-                    await salvarFicheiroNoGithub('pedeja/dados_atuais.json', registos, 'Atualização inicial de entregas');
+                    await salvarFicheiroNoGithub('pedeja/dados_atuais.json', registos, 'Atualização inicial');
                 }
             } catch (e) {
-                if (!silencioso) alert("Erro ao sincronizar. Confirma o teu Token no menu ⚙️.");
+                if (!silencioso) alert("Erro ao sincronizar. Verifica a chave no ⚙️.");
             }
         }
 
@@ -580,10 +566,7 @@
             document.getElementById('cfgToken').value = ghConfig.token || '';
             document.getElementById('modalConfigOverlay').classList.add('active');
         }
-
-        function fecharModalConfig() {
-            document.getElementById('modalConfigOverlay').classList.remove('active');
-        }
+        function fecharModalConfig() { document.getElementById('modalConfigOverlay').classList.remove('active'); }
 
         function guardarConfiguracoes() {
             ghConfig.user = document.getElementById('cfgUser').value.trim();
@@ -607,7 +590,7 @@
 
             if (indexEditar !== null) {
                 const item = registos[indexEditar];
-                titulo.innerText = `✏️ Editar Entrega (${dia})`;
+                titulo.innerText = `✏️ Editar (${dia})`;
                 btnSubmit.innerText = "Atualizar Entrega";
 
                 document.getElementById('formLocal').value = item.local;
@@ -615,13 +598,13 @@
                 document.getElementById('formPaguei').value = item.paguei;
                 document.getElementById('formTaxa').value = item.taxaEntrega;
             } else {
-                titulo.innerText = `➕ Registar Entrega (${dia})`;
+                titulo.innerText = `➕ Registar (${dia})`;
                 btnSubmit.innerText = "Adicionar Entrega";
                 limparFormulario();
             }
 
             modal.classList.add('active');
-            setTimeout(() => document.getElementById('formLocal').focus(), 100);
+            setTimeout(() => document.getElementById('formLocal').focus(), 150);
         }
 
         function fecharModalForm() {
@@ -638,7 +621,7 @@
             const taxaEntrega = parseFloat(document.getElementById('formTaxa').value) || 0;
 
             if (!local) {
-                alert("Por favor, indica o nome do local.");
+                alert("Indica o nome do local.");
                 return;
             }
 
@@ -662,41 +645,38 @@
             document.getElementById('formTaxa').value = '';
         }
 
-        /* --- LISTA DE PEDIDOS --- */
+        /* --- LISTA DE PEDIDOS DO DIA --- */
         function abrirModalList(dia) {
             diaAtivo = dia;
-            document.getElementById('modalListTitulo').innerText = `📦 Pedidos de ${dia}`;
+            document.getElementById('modalListTitulo').innerText = `📦 ${dia}`;
             renderizarListaDia(dia);
             document.getElementById('modalListOverlay').classList.add('active');
         }
-
-        function fecharModalList() {
-            document.getElementById('modalListOverlay').classList.remove('active');
-            diaAtivo = null;
-        }
+        function fecharModalList() { document.getElementById('modalListOverlay').classList.remove('active'); }
 
         function renderizarListaDia(dia) {
             const entregas = registos.filter(r => r.dia === dia);
             const container = document.getElementById('modalListConteudo');
 
             if (entregas.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px;">Nenhum pedido registado para este dia.</p>`;
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px;">Nenhum pedido registado.</p>`;
                 return;
             }
 
             let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Local</th>
-                            <th>Pagou</th>
-                            <th>Paguei</th>
-                            <th>Taxa</th>
-                            <th>A Dar</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Local</th>
+                                <th>Pagou</th>
+                                <th>Paguei</th>
+                                <th>Taxa</th>
+                                <th>A Dar</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
 
             entregas.forEach(r => {
@@ -719,7 +699,7 @@
                 `;
             });
 
-            html += `</tbody></table>`;
+            html += `</tbody></table></div>`;
             container.innerHTML = html;
         }
 
@@ -730,7 +710,7 @@
         }
 
         async function removerRegisto(index) {
-            if (confirm("Tens a certeza que queres apagar este pedido?")) {
+            if (confirm("Apagar este pedido?")) {
                 const diaAtual = registos[index].dia;
                 registos.splice(index, 1);
                 renderizar();
@@ -747,20 +727,18 @@
             listArea.style.display = 'block';
 
             if (!ghConfig.token) {
-                listArea.innerHTML = `
-                    <p style="color:var(--text-muted); text-align:center;">Configura o Token na engrenagem ⚙️ para consultar as semanas do GitHub.</p>
-                `;
+                listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Configura a API Key no ⚙️ primeiro.</p>`;
                 return;
             }
 
-            listArea.innerHTML = `<p style="color:var(--text-muted); text-align: center;">A carregar semanas do GitHub...</p>`;
+            listArea.innerHTML = `<p style="color:var(--text-muted); text-align: center;">A carregar semanas...</p>`;
 
             try {
                 const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/pedeja/historico`;
                 const res = await fetch(url, { headers: { 'Authorization': `Bearer ${ghConfig.token}` } });
                 
                 if (!res.ok) {
-                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Ainda não tens semanas arquivadas.</p>`;
+                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Ainda não existem semanas arquivadas.</p>`;
                     return;
                 }
 
@@ -768,24 +746,24 @@
                 const jsonFiles = ficheiros.filter(f => f.name.endsWith('.json'));
 
                 if (jsonFiles.length === 0) {
-                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Nenhum registo encontrado na pasta historico.</p>`;
+                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Nenhum registo encontrado.</p>`;
                     return;
                 }
 
-                let html = `<h4 style="margin-bottom:12px;">Semanas Arquivadas:</h4>`;
+                let html = ``;
                 jsonFiles.forEach(f => {
                     const nomeFormatado = f.name.replace('semana_', 'Semana ').replace('.json', '').replace(/_/g, '/');
                     html += `
                         <div class="history-list-item">
                             <span>📅 <b>${nomeFormatado}</b></span>
-                            <button class="nav-btn nav-btn-history" onclick="carregarDetalheSemana('${f.path}')">Ver Detalhes</button>
+                            <button class="nav-btn nav-btn-history" onclick="carregarDetalheSemana('${f.path}')">Ver</button>
                         </div>
                     `;
                 });
 
                 listArea.innerHTML = html;
             } catch (e) {
-                listArea.innerHTML = `<p style="color:var(--accent-danger); text-align:center;">Erro ao ligar ao repositório do GitHub.</p>`;
+                listArea.innerHTML = `<p style="color:var(--accent-danger); text-align:center;">Erro ao ligar ao GitHub.</p>`;
             }
         }
 
@@ -808,20 +786,19 @@
 
                 let html = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <button class="nav-btn" onclick="voltarParaListaHistorico()">⬅️ Voltar à Lista</button>
+                        <button class="nav-btn" onclick="voltarParaListaHistorico()">⬅️ Voltar</button>
                         <button class="nav-btn" style="background:#2563eb; color:#fff;" onclick='restaurarSemanaHistorico(${JSON.stringify(lista)})'>
-                            🔄 Restaurar para o Painel
+                            🔄 Restaurar
                         </button>
                     </div>
 
-                    <div style="background:#0f172a; padding:15px; border-radius:10px; border:1px solid var(--card-border); margin-bottom:15px; display:flex; justify-content:space-around; text-align:center;">
-                        <div><small style="color:var(--text-muted);">Semana</small><br><b>${semanaFim}</b></div>
+                    <div style="background:#0f172a; padding:10px; border-radius:10px; border:1px solid var(--card-border); margin-bottom:12px; display:grid; grid-template-columns: repeat(3, 1fr); text-align:center; font-size:0.8rem;">
                         <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
                         <div><small style="color:var(--text-muted);">A Dar</small><br><b style="color:#f472b6;">${totais.adar.toFixed(2)}€</b></div>
                         <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
                     </div>
 
-                    <div style="max-height:220px; overflow-y:auto;">
+                    <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr><th>Dia</th><th>Local</th><th>Pagou</th><th>Paguei</th><th>Taxa</th><th>A Dar</th></tr>
@@ -847,17 +824,17 @@
                 html += `</tbody></table></div>`;
                 detailArea.innerHTML = html;
             } catch (e) {
-                alert("Erro ao abrir os detalhes desta semana.");
+                alert("Erro ao abrir detalhes.");
             }
         }
 
         async function restaurarSemanaHistorico(lista) {
-            if (confirm("Desejas colocar os registos desta semana no teu painel principal ativo?")) {
+            if (confirm("Restaurar estes registos para a semana ativa?")) {
                 registos = lista;
                 renderizar();
                 await autoSalvarNoGithub();
                 fecharModalHistorico();
-                alert("Semana restaurada no painel e sincronizada no GitHub!");
+                alert("Semana restaurada!");
             }
         }
 
@@ -866,9 +843,7 @@
             document.getElementById('historyListArea').style.display = 'block';
         }
 
-        function fecharModalHistorico() {
-            document.getElementById('modalHistoryOverlay').classList.remove('active');
-        }
+        function fecharModalHistorico() { document.getElementById('modalHistoryOverlay').classList.remove('active'); }
 
         /* --- FECHAR SEMANA --- */
         function obterDataFimSemana() {
@@ -891,14 +866,13 @@
 
         async function fecharSemana() {
             if (registos.length === 0) {
-                alert("Não existem dados registados para fechar a semana.");
+                alert("Não existem dados para fechar.");
                 return;
             }
 
             const dataSemana = obterDataFimSemana();
             const confirmacao = confirm(
-                `Fechar a semana de ${dataSemana.formatadoLegivel}?\n\n` +
-                `Os dados serão arquivados no GitHub e o painel voltará a zeros.`
+                `Fechar a semana de ${dataSemana.formatadoLegivel}?\n\nOs dados serão arquivados no GitHub e o painel voltará a zeros.`
             );
 
             if (!confirmacao) return;
@@ -915,29 +889,24 @@
                 registos: registos
             };
 
-            // 1. Arquivar no GitHub
             const caminhoHist = `pedeja/historico/semana_${dataSemana.formatadoFicheiro}.json`;
             await salvarFicheiroNoGithub(caminhoHist, relatorioHistorico, `Arquivo Semana ${dataSemana.formatadoLegivel}`);
 
-            // 2. Limpar dados atuais
             registos = [];
             localStorage.removeItem('entregas_v2');
             await salvarFicheiroNoGithub('pedeja/dados_atuais.json', [], 'Reset de início de semana');
 
             renderizar();
-            alert(`Semana fechada e guardada no GitHub com sucesso!`);
+            alert(`Semana fechada e guardada no GitHub!`);
         }
 
-        /* --- IMPORTAR / EXPORTAR LOCAL (.JSON) --- */
+        /* --- IMPORTAR / EXPORTAR LOCAL --- */
         function exportarFicheiroLocal() {
-            if (registos.length === 0) {
-                alert("Não existem registos para exportar.");
-                return;
-            }
+            if (registos.length === 0) return alert("Sem dados para exportar.");
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registos, null, 2));
             const a = document.createElement('a');
-            a.setAttribute("href", dataStr);
-            a.setAttribute("download", "entregas_backup.json");
+            a.href = dataStr;
+            a.download = "entregas_backup.json";
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -946,40 +915,29 @@
         function importarFicheiroLocal(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const dados = JSON.parse(e.target.result);
                     const lista = Array.isArray(dados) ? dados : (dados.registos || null);
-                    
                     if (lista && Array.isArray(lista)) {
                         registos = lista;
                         renderizar();
                         await autoSalvarNoGithub();
-                        alert("Dados importados e sincronizados com sucesso!");
-                    } else {
-                        alert("Formato de ficheiro não reconhecido.");
-                    }
-                } catch (err) {
-                    alert("Erro ao ler o ficheiro JSON.");
-                }
+                        alert("Dados importados com sucesso!");
+                    } else alert("Ficheiro inválido.");
+                } catch (err) { alert("Erro ao ler o ficheiro."); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
         function fecharModalFora(e, overlayId) {
-            if (e.target.id === overlayId) {
-                document.getElementById(overlayId).classList.remove('active');
-            }
+            if (e.target.id === overlayId) document.getElementById(overlayId).classList.remove('active');
         }
 
-        // Inicialização
         renderizar();
-        if (ghConfig.token) {
-            sincronizarComGithub(true);
-        }
+        if (ghConfig.token) sincronizarComGithub(true);
     </script>
 </body>
 </html>
