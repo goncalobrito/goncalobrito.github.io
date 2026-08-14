@@ -33,11 +33,11 @@
             top: 0;
             z-index: 50;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-            flex-wrap: wrap;
             gap: 10px;
         }
         .navbar-brand { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .navbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .navbar-actions { display: flex; gap: 8px; align-items: center; }
+
         .nav-btn {
             background: #334155;
             color: #f8fafc;
@@ -53,12 +53,42 @@
             transition: 0.2s;
         }
         .nav-btn:hover { background: #475569; }
-        .nav-btn-config { border-color: #64748b; }
+        .nav-btn-sync { border-color: #3b82f6; color: #93c5fd; }
         .nav-btn-history { border-color: var(--accent-purple); color: #c4b5fd; background: rgba(139, 92, 246, 0.15); }
         .nav-btn-history:hover { background: var(--accent-purple); color: #fff; }
-        .nav-btn-sync { border-color: #3b82f6; color: #93c5fd; }
         .nav-btn-reset { border-color: var(--accent-danger); background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
         .nav-btn-reset:hover { background: var(--accent-danger); color: #fff; }
+
+        /* Dropdown da Engrenagem */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background-color: #1e293b;
+            min-width: 190px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .dropdown-content.show { display: block; animation: fadeIn 0.15s ease-in; }
+        .dropdown-item {
+            color: var(--text-main);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background-color: #334155; color: #fff; }
 
         /* Container */
         .container { max-width: 1200px; margin: 20px auto 0 auto; padding: 0 16px; }
@@ -170,6 +200,10 @@
             from { opacity: 0; transform: scale(0.7); }
             to { opacity: 1; transform: scale(1); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .modal-header {
             padding: 16px 20px;
@@ -250,14 +284,33 @@
 </head>
 <body>
 
+    <!-- Input escondido para importar ficheiro local -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importarFicheiroLocal(event)">
+
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-brand">🛵 <span>Entregas Semanal</span></div>
         <div class="navbar-actions">
-            <button class="nav-btn nav-btn-config" onclick="abrirModalConfig()">⚙️ GitHub</button>
-            <button class="nav-btn nav-btn-sync" onclick="sincronizarComGithub()">🔄 Sincronizar</button>
+            <!-- Botão de Refresh / Sincronizar -->
+            <button class="nav-btn nav-btn-sync" onclick="sincronizarComGithub()" title="Sincronizar com o GitHub">🔄</button>
             <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Histórico</button>
             <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹 Fechar Semana</button>
+            
+            <!-- Dropdown da Engrenagem -->
+            <div class="dropdown">
+                <button class="nav-btn" onclick="toggleDropdown()" id="btnDropdown">⚙️</button>
+                <div class="dropdown-content" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="abrirModalConfig(); fecharDropdown();">
+                        🔑 API Key GitHub
+                    </div>
+                    <div class="dropdown-item" onclick="document.getElementById('fileInput').click(); fecharDropdown();">
+                        📂 Importar (.json)
+                    </div>
+                    <div class="dropdown-item" onclick="exportarFicheiroLocal(); fecharDropdown();">
+                        💾 Exportar (.json)
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -276,7 +329,7 @@
     <div class="modal-overlay" id="modalConfigOverlay" onclick="fecharModalFora(event, 'modalConfigOverlay')">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>⚙️ Configuração do Repositório GitHub</h3>
+                <h3>⚙️ Configuração da API do GitHub</h3>
                 <button class="btn-modal-close" onclick="fecharModalConfig()">✕</button>
             </div>
             <div class="modal-body">
@@ -375,6 +428,21 @@
             repo: 'goncalobrito.github.io',
             token: ''
         };
+
+        /* --- DROPDOWN ENGRENAGEM --- */
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        function fecharDropdown() {
+            document.getElementById('dropdownMenu').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('#btnDropdown')) {
+                fecharDropdown();
+            }
+        }
 
         function calcularTotais(lista = registos) {
             let lucro = 0, adar = 0;
@@ -495,7 +563,7 @@
                     await salvarFicheiroNoGithub('pedeja/dados_atuais.json', registos, 'Atualização inicial de entregas');
                 }
             } catch (e) {
-                if (!silencioso) alert("Erro ao sincronizar. Confirma o teu Token no botão ⚙️.");
+                if (!silencioso) alert("Erro ao sincronizar. Confirma o teu Token no menu ⚙️.");
             }
         }
 
@@ -680,7 +748,7 @@
 
             if (!ghConfig.token) {
                 listArea.innerHTML = `
-                    <p style="color:var(--text-muted); text-align:center;">Configura o Token no botão ⚙️ para consultar as semanas do GitHub.</p>
+                    <p style="color:var(--text-muted); text-align:center;">Configura o Token na engrenagem ⚙️ para consultar as semanas do GitHub.</p>
                 `;
                 return;
             }
@@ -739,7 +807,13 @@
                 detailArea.style.display = 'block';
 
                 let html = `
-                    <button class="nav-btn" style="margin-bottom:12px;" onclick="voltarParaListaHistorico()">⬅️ Voltar à Lista</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <button class="nav-btn" onclick="voltarParaListaHistorico()">⬅️ Voltar à Lista</button>
+                        <button class="nav-btn" style="background:#2563eb; color:#fff;" onclick='restaurarSemanaHistorico(${JSON.stringify(lista)})'>
+                            🔄 Restaurar para o Painel
+                        </button>
+                    </div>
+
                     <div style="background:#0f172a; padding:15px; border-radius:10px; border:1px solid var(--card-border); margin-bottom:15px; display:flex; justify-content:space-around; text-align:center;">
                         <div><small style="color:var(--text-muted);">Semana</small><br><b>${semanaFim}</b></div>
                         <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
@@ -774,6 +848,16 @@
                 detailArea.innerHTML = html;
             } catch (e) {
                 alert("Erro ao abrir os detalhes desta semana.");
+            }
+        }
+
+        async function restaurarSemanaHistorico(lista) {
+            if (confirm("Desejas colocar os registos desta semana no teu painel principal ativo?")) {
+                registos = lista;
+                renderizar();
+                await autoSalvarNoGithub();
+                fecharModalHistorico();
+                alert("Semana restaurada no painel e sincronizada no GitHub!");
             }
         }
 
@@ -814,7 +898,7 @@
             const dataSemana = obterDataFimSemana();
             const confirmacao = confirm(
                 `Fechar a semana de ${dataSemana.formatadoLegivel}?\n\n` +
-                `Os dados serão guardados na pasta pedeja/historico do GitHub e o painel voltará a zeros.`
+                `Os dados serão arquivados no GitHub e o painel voltará a zeros.`
             );
 
             if (!confirmacao) return;
@@ -842,6 +926,47 @@
 
             renderizar();
             alert(`Semana fechada e guardada no GitHub com sucesso!`);
+        }
+
+        /* --- IMPORTAR / EXPORTAR LOCAL (.JSON) --- */
+        function exportarFicheiroLocal() {
+            if (registos.length === 0) {
+                alert("Não existem registos para exportar.");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registos, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", "entregas_backup.json");
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function importarFicheiroLocal(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    const lista = Array.isArray(dados) ? dados : (dados.registos || null);
+                    
+                    if (lista && Array.isArray(lista)) {
+                        registos = lista;
+                        renderizar();
+                        await autoSalvarNoGithub();
+                        alert("Dados importados e sincronizados com sucesso!");
+                    } else {
+                        alert("Formato de ficheiro não reconhecido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o ficheiro JSON.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
         }
 
         function fecharModalFora(e, overlayId) {
