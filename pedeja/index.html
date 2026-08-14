@@ -25,7 +25,7 @@
         .navbar {
             background-color: #1e293b;
             border-bottom: 1px solid var(--card-border);
-            padding: 12px 24px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,14 +53,14 @@
             transition: 0.2s;
         }
         .nav-btn:hover { background: #475569; }
+        .nav-btn-config { border-color: #64748b; }
         .nav-btn-history { border-color: var(--accent-purple); color: #c4b5fd; background: rgba(139, 92, 246, 0.15); }
         .nav-btn-history:hover { background: var(--accent-purple); color: #fff; }
-        .nav-btn-import { border-color: #3b82f6; }
-        .nav-btn-export { border-color: #10b981; }
+        .nav-btn-sync { border-color: #3b82f6; color: #93c5fd; }
         .nav-btn-reset { border-color: var(--accent-danger); background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
         .nav-btn-reset:hover { background: var(--accent-danger); color: #fff; }
 
-        /* Content Container */
+        /* Container */
         .container { max-width: 1200px; margin: 20px auto 0 auto; padding: 0 16px; }
 
         /* Resumo Global */
@@ -136,7 +136,7 @@
         .btn-plus:hover { background: #1d4ed8; }
         .btn-eye { flex: 1; font-size: 1.2rem; }
 
-        /* --- MODAIS GERAIS --- */
+        /* Modais */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -235,34 +235,16 @@
         .btn-tbl-edit { background: #eab308; color: #000; font-weight: bold; }
         .btn-tbl-del { background: #ef4444; color: #fff; margin-left: 4px; font-weight: bold; }
 
-        /* --- ZONA DRAG & DROP DO HISTÓRICO --- */
-        .dropzone {
-            border: 2px dashed #475569;
-            border-radius: 12px;
-            padding: 30px 20px;
-            text-align: center;
-            background: #0f172a;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 20px;
-        }
-        .dropzone:hover, .dropzone.dragover {
-            border-color: var(--accent-purple);
-            background: rgba(139, 92, 246, 0.08);
-        }
-        .dropzone-icon { font-size: 2.5rem; margin-bottom: 8px; }
-        .dropzone p { color: var(--text-muted); font-size: 0.9rem; }
-        .dropzone span { color: var(--accent-purple); font-weight: bold; }
-
-        .history-summary-box {
+        /* Histórico Cloud List */
+        .history-list-item {
             background: #0f172a;
             border: 1px solid var(--card-border);
+            padding: 12px 16px;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             display: flex;
-            justify-content: space-around;
-            text-align: center;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
@@ -272,25 +254,49 @@
     <nav class="navbar">
         <div class="navbar-brand">🛵 <span>Entregas Semanal</span></div>
         <div class="navbar-actions">
-            <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Ver Histórico</button>
-            <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importarFicheiro(event)">
-            <button class="nav-btn nav-btn-import" onclick="document.getElementById('fileInput').click()">📂 Importar</button>
-            <button class="nav-btn nav-btn-export" onclick="exportarFicheiro()">💾 Exportar</button>
+            <button class="nav-btn nav-btn-config" onclick="abrirModalConfig()">⚙️ GitHub</button>
+            <button class="nav-btn nav-btn-sync" onclick="sincronizarComGithub()">🔄 Sincronizar</button>
+            <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Histórico</button>
             <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹 Fechar Semana</button>
         </div>
     </nav>
 
     <!-- CONTEÚDO PRINCIPAL -->
     <div class="container">
-        <!-- Resumo Global -->
         <div class="resumo-global">
             <div class="box-global box-lucro">Meu Lucro Total <span id="gloLucro">0.00€</span></div>
             <div class="box-global box-adar">Valor a Dar Total <span id="gloAdar">0.00€</span></div>
             <div class="box-global box-total">Balanço Geral <span id="gloTotal">0.00€</span></div>
         </div>
 
-        <!-- 7 Cards -->
         <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+
+    <!-- MODAL CONFIGURAÇÃO GITHUB -->
+    <div class="modal-overlay" id="modalConfigOverlay" onclick="fecharModalFora(event, 'modalConfigOverlay')">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>⚙️ Configuração do Repositório GitHub</h3>
+                <button class="btn-modal-close" onclick="fecharModalConfig()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        <label>Utilizador GitHub</label>
+                        <input type="text" id="cfgUser" value="goncalobrito">
+                    </div>
+                    <div>
+                        <label>Nome do Repositório</label>
+                        <input type="text" id="cfgRepo" value="goncalobrito.github.io">
+                    </div>
+                    <div>
+                        <label>Personal Access Token (PAT)</label>
+                        <input type="password" id="cfgToken" placeholder="github_pat_... ou ghp_...">
+                    </div>
+                    <button class="btn-submit" onclick="guardarConfiguracoes()">Guardar e Conectar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL FORMULÁRIO -->
@@ -337,23 +343,18 @@
         </div>
     </div>
 
-    <!-- MODAL HISTÓRICO DE UMA SEMANA (DRAG & DROP) -->
+    <!-- MODAL HISTÓRICO DE SEMANAS (GITHUB) -->
     <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
         <div class="modal-card modal-card-large">
             <div class="modal-header">
-                <h3>📜 Análise de Histórico de Semana</h3>
+                <h3>📜 Semanas Guardadas no GitHub</h3>
                 <button class="btn-modal-close" onclick="fecharModalHistorico()">✕</button>
             </div>
             <div class="modal-body">
-                <!-- Dropzone de Ficheiros -->
-                <div class="dropzone" id="dropzone" onclick="document.getElementById('historyFileInput').click()">
-                    <input type="file" id="historyFileInput" accept=".json" style="display: none;" onchange="processarFicheiroHistorico(this.files[0])">
-                    <div class="dropzone-icon">📁</div>
-                    <p>Arrasta para aqui o ficheiro <b>.json</b> da semana ou <span>procura no computador</span></p>
+                <div id="historyListArea">
+                    <p style="color:var(--text-muted); text-align: center;">A carregar semanas do GitHub...</p>
                 </div>
-
-                <!-- Detalhes do Histórico Analisado -->
-                <div id="historyResult" style="display: none;"></div>
+                <div id="historyDetailArea" style="display:none; margin-top: 15px;"></div>
             </div>
         </div>
     </div>
@@ -367,6 +368,13 @@
         let registos = JSON.parse(localStorage.getItem('entregas_v2')) || [];
         let diaAtivo = null;
         let idEdicao = null;
+
+        // Configuração Pré-Definida para o teu Repositório
+        let ghConfig = JSON.parse(localStorage.getItem('gh_config')) || {
+            user: 'goncalobrito',
+            repo: 'goncalobrito.github.io',
+            token: ''
+        };
 
         function calcularTotais(lista = registos) {
             let lucro = 0, adar = 0;
@@ -427,7 +435,100 @@
             localStorage.setItem('entregas_v2', JSON.stringify(registos));
         }
 
-        /* --- MODAL FORMULÁRIO --- */
+        /* --- API GITHUB --- */
+        async function salvarFicheiroNoGithub(caminho, dadosObj, commitMsg) {
+            if (!ghConfig.token || !ghConfig.user || !ghConfig.repo) return false;
+
+            const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${caminho}`;
+            
+            let sha = null;
+            try {
+                const resExist = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${ghConfig.token}` }
+                });
+                if (resExist.ok) {
+                    const dataExist = await resExist.json();
+                    sha = dataExist.sha;
+                }
+            } catch (e) {}
+
+            const conteudoBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(dadosObj, null, 2))));
+            const body = {
+                message: commitMsg,
+                content: conteudoBase64,
+                ...(sha && { sha })
+            };
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${ghConfig.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            return response.ok;
+        }
+
+        async function sincronizarComGithub(silencioso = false) {
+            if (!ghConfig.token) {
+                if (!silencioso) abrirModalConfig();
+                return;
+            }
+
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/pedeja/dados_atuais.json`;
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${ghConfig.token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const conteudo = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                    if (Array.isArray(conteudo)) {
+                        registos = conteudo;
+                        renderizar();
+                        if (!silencioso) alert("Sincronizado com o GitHub com sucesso!");
+                    }
+                } else if (registos.length > 0) {
+                    await salvarFicheiroNoGithub('pedeja/dados_atuais.json', registos, 'Atualização inicial de entregas');
+                }
+            } catch (e) {
+                if (!silencioso) alert("Erro ao sincronizar. Confirma o teu Token no botão ⚙️.");
+            }
+        }
+
+        async function autoSalvarNoGithub() {
+            if (ghConfig.token) {
+                await salvarFicheiroNoGithub('pedeja/dados_atuais.json', registos, 'Atualização de entregas');
+            }
+        }
+
+        /* --- CONFIGURAÇÕES --- */
+        function abrirModalConfig() {
+            document.getElementById('cfgUser').value = ghConfig.user || 'goncalobrito';
+            document.getElementById('cfgRepo').value = ghConfig.repo || 'goncalobrito.github.io';
+            document.getElementById('cfgToken').value = ghConfig.token || '';
+            document.getElementById('modalConfigOverlay').classList.add('active');
+        }
+
+        function fecharModalConfig() {
+            document.getElementById('modalConfigOverlay').classList.remove('active');
+        }
+
+        function guardarConfiguracoes() {
+            ghConfig.user = document.getElementById('cfgUser').value.trim();
+            ghConfig.repo = document.getElementById('cfgRepo').value.trim();
+            ghConfig.token = document.getElementById('cfgToken').value.trim();
+
+            localStorage.setItem('gh_config', JSON.stringify(ghConfig));
+            fecharModalConfig();
+            alert("Configurações guardadas!");
+            sincronizarComGithub();
+        }
+
+        /* --- FORMULÁRIO --- */
         function abrirModalForm(dia, indexEditar = null) {
             diaAtivo = dia;
             idEdicao = indexEditar;
@@ -462,14 +563,14 @@
             idEdicao = null;
         }
 
-        function submeterFormulario() {
+        async function submeterFormulario() {
             const local = document.getElementById('formLocal').value.trim();
             const pagou = parseFloat(document.getElementById('formPagou').value) || 0;
             const paguei = parseFloat(document.getElementById('formPaguei').value) || 0;
             const taxaEntrega = parseFloat(document.getElementById('formTaxa').value) || 0;
 
             if (!local) {
-                alert("Por favor, preenche o nome do local.");
+                alert("Por favor, indica o nome do local.");
                 return;
             }
 
@@ -483,6 +584,7 @@
 
             fecharModalForm();
             renderizar();
+            await autoSalvarNoGithub();
         }
 
         function limparFormulario() {
@@ -492,7 +594,7 @@
             document.getElementById('formTaxa').value = '';
         }
 
-        /* --- MODAL LISTA DE PEDIDOS --- */
+        /* --- LISTA DE PEDIDOS --- */
         function abrirModalList(dia) {
             diaAtivo = dia;
             document.getElementById('modalListTitulo').innerText = `📦 Pedidos de ${dia}`;
@@ -559,129 +661,132 @@
             abrirModalForm(item.dia, index);
         }
 
-        function removerRegisto(index) {
+        async function removerRegisto(index) {
             if (confirm("Tens a certeza que queres apagar este pedido?")) {
                 const diaAtual = registos[index].dia;
                 registos.splice(index, 1);
                 renderizar();
                 renderizarListaDia(diaAtual);
+                await autoSalvarNoGithub();
             }
         }
 
-        /* --- MODAL HISTÓRICO & DRAG AND DROP --- */
-        function abrirModalHistorico() {
-            document.getElementById('historyResult').style.display = 'none';
+        /* --- HISTÓRICO --- */
+        async function abrirModalHistorico() {
             document.getElementById('modalHistoryOverlay').classList.add('active');
+            document.getElementById('historyDetailArea').style.display = 'none';
+            const listArea = document.getElementById('historyListArea');
+            listArea.style.display = 'block';
+
+            if (!ghConfig.token) {
+                listArea.innerHTML = `
+                    <p style="color:var(--text-muted); text-align:center;">Configura o Token no botão ⚙️ para consultar as semanas do GitHub.</p>
+                `;
+                return;
+            }
+
+            listArea.innerHTML = `<p style="color:var(--text-muted); text-align: center;">A carregar semanas do GitHub...</p>`;
+
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/pedeja/historico`;
+                const res = await fetch(url, { headers: { 'Authorization': `Bearer ${ghConfig.token}` } });
+                
+                if (!res.ok) {
+                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Ainda não tens semanas arquivadas.</p>`;
+                    return;
+                }
+
+                const ficheiros = await res.json();
+                const jsonFiles = ficheiros.filter(f => f.name.endsWith('.json'));
+
+                if (jsonFiles.length === 0) {
+                    listArea.innerHTML = `<p style="color:var(--text-muted); text-align:center;">Nenhum registo encontrado na pasta historico.</p>`;
+                    return;
+                }
+
+                let html = `<h4 style="margin-bottom:12px;">Semanas Arquivadas:</h4>`;
+                jsonFiles.forEach(f => {
+                    const nomeFormatado = f.name.replace('semana_', 'Semana ').replace('.json', '').replace(/_/g, '/');
+                    html += `
+                        <div class="history-list-item">
+                            <span>📅 <b>${nomeFormatado}</b></span>
+                            <button class="nav-btn nav-btn-history" onclick="carregarDetalheSemana('${f.path}')">Ver Detalhes</button>
+                        </div>
+                    `;
+                });
+
+                listArea.innerHTML = html;
+            } catch (e) {
+                listArea.innerHTML = `<p style="color:var(--accent-danger); text-align:center;">Erro ao ligar ao repositório do GitHub.</p>`;
+            }
+        }
+
+        async function carregarDetalheSemana(path) {
+            const detailArea = document.getElementById('historyDetailArea');
+            const listArea = document.getElementById('historyListArea');
+
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${path}`;
+                const res = await fetch(url, { headers: { 'Authorization': `Bearer ${ghConfig.token}` } });
+                const fileData = await res.json();
+                const dados = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+                const lista = Array.isArray(dados) ? dados : (dados.registos || []);
+                const semanaFim = dados.semana_fim || path;
+                const totais = calcularTotais(lista);
+
+                listArea.style.display = 'none';
+                detailArea.style.display = 'block';
+
+                let html = `
+                    <button class="nav-btn" style="margin-bottom:12px;" onclick="voltarParaListaHistorico()">⬅️ Voltar à Lista</button>
+                    <div style="background:#0f172a; padding:15px; border-radius:10px; border:1px solid var(--card-border); margin-bottom:15px; display:flex; justify-content:space-around; text-align:center;">
+                        <div><small style="color:var(--text-muted);">Semana</small><br><b>${semanaFim}</b></div>
+                        <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                        <div><small style="color:var(--text-muted);">A Dar</small><br><b style="color:#f472b6;">${totais.adar.toFixed(2)}€</b></div>
+                        <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+                    </div>
+
+                    <div style="max-height:220px; overflow-y:auto;">
+                        <table>
+                            <thead>
+                                <tr><th>Dia</th><th>Local</th><th>Pagou</th><th>Paguei</th><th>Taxa</th><th>A Dar</th></tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                lista.forEach(r => {
+                    const valTaxas = (r.pagou || 0) - (r.paguei || 0);
+                    const valAdar = valTaxas - (r.taxaEntrega || 0);
+                    html += `
+                        <tr>
+                            <td><b>${r.dia}</b></td>
+                            <td>${r.local}</td>
+                            <td>${r.pagou.toFixed(2)}€</td>
+                            <td>${r.paguei.toFixed(2)}€</td>
+                            <td>${r.taxaEntrega.toFixed(2)}€</td>
+                            <td style="color:#f472b6;">${valAdar.toFixed(2)}€</td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table></div>`;
+                detailArea.innerHTML = html;
+            } catch (e) {
+                alert("Erro ao abrir os detalhes desta semana.");
+            }
+        }
+
+        function voltarParaListaHistorico() {
+            document.getElementById('historyDetailArea').style.display = 'none';
+            document.getElementById('historyListArea').style.display = 'block';
         }
 
         function fecharModalHistorico() {
             document.getElementById('modalHistoryOverlay').classList.remove('active');
         }
 
-        // Configuração Drag and Drop
-        const dropzone = document.getElementById('dropzone');
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropzone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                dropzone.classList.add('dragover');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropzone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('dragover');
-            }, false);
-        });
-
-        dropzone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length > 0) processarFicheiroHistorico(files[0]);
-        });
-
-        function processarFicheiroHistorico(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const dados = JSON.parse(e.target.result);
-                    renderizarResultadoHistorico(dados);
-                } catch (err) {
-                    alert("Erro ao ler o ficheiro JSON de histórico.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function renderizarResultadoHistorico(dados) {
-            const container = document.getElementById('historyResult');
-            const lista = Array.isArray(dados) ? dados : (dados.registos || []);
-            const semanaFim = dados.semana_fim || "Data não especificada";
-            const totais = calcularTotais(lista);
-
-            let html = `
-                <div class="history-summary-box">
-                    <div><small style="color:var(--text-muted);">Semana de</small><br><b>${semanaFim}</b></div>
-                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
-                    <div><small style="color:var(--text-muted);">A Dar</small><br><b style="color:#f472b6;">${totais.adar.toFixed(2)}€</b></div>
-                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
-                </div>
-
-                <h4 style="margin-top: 15px; margin-bottom: 10px;">📋 Pedidos da Semana (${lista.length} registos)</h4>
-                <div style="max-height: 250px; overflow-y: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dia</th>
-                                <th>Local</th>
-                                <th>Pagou</th>
-                                <th>Paguei</th>
-                                <th>Taxa</th>
-                                <th>A Dar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            lista.forEach(r => {
-                const valTaxas = (r.pagou || 0) - (r.paguei || 0);
-                const valAdar = valTaxas - (r.taxaEntrega || 0);
-                html += `
-                    <tr>
-                        <td><b>${r.dia}</b></td>
-                        <td>${r.local}</td>
-                        <td>${r.pagou.toFixed(2)}€</td>
-                        <td>${r.paguei.toFixed(2)}€</td>
-                        <td>${r.taxaEntrega.toFixed(2)}€</td>
-                        <td style="color:#f472b6;">${valAdar.toFixed(2)}€</td>
-                    </tr>
-                `;
-            });
-
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-                <button class="btn-submit" style="margin-top: 15px; background: #3b82f6;" onclick='restaurarSemanaHistorico(${JSON.stringify(lista)})'>
-                    🔄 Carregar/Restaurar esta semana para o Painel
-                </button>
-            `;
-
-            container.innerHTML = html;
-            container.style.display = 'block';
-        }
-
-        function restaurarSemanaHistorico(lista) {
-            if (confirm("Desejas colocar estes dados históricos no teu painel de edição atual?")) {
-                registos = lista;
-                renderizar();
-                fecharModalHistorico();
-                alert("Semana restaurada no painel principal!");
-            }
-        }
-
-        /* --- OBTER DATA DO FIM DA SEMANA (DOMINGO) --- */
+        /* --- FECHAR SEMANA --- */
         function obterDataFimSemana() {
             const hoje = new Date();
             const diaSemana = hoje.getDay(); 
@@ -700,8 +805,7 @@
             };
         }
 
-        /* --- FECHAR SEMANA --- */
-        function fecharSemana() {
+        async function fecharSemana() {
             if (registos.length === 0) {
                 alert("Não existem dados registados para fechar a semana.");
                 return;
@@ -709,9 +813,8 @@
 
             const dataSemana = obterDataFimSemana();
             const confirmacao = confirm(
-                `Desejas fechar a semana terminada em ${dataSemana.formatadoLegivel}?\n\n` +
-                `1. O ficheiro histórico será guardado.\n` +
-                `2. Todas as cards serão limpas a zeros para a nova semana.`
+                `Fechar a semana de ${dataSemana.formatadoLegivel}?\n\n` +
+                `Os dados serão guardados na pasta pedeja/historico do GitHub e o painel voltará a zeros.`
             );
 
             if (!confirmacao) return;
@@ -728,61 +831,17 @@
                 registos: registos
             };
 
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(relatorioHistorico, null, 2));
-            const nomeFicheiro = `semana_${dataSemana.formatadoFicheiro}.json`;
-            
-            const a = document.createElement('a');
-            a.setAttribute("href", dataStr);
-            a.setAttribute("download", nomeFicheiro);
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
+            // 1. Arquivar no GitHub
+            const caminhoHist = `pedeja/historico/semana_${dataSemana.formatadoFicheiro}.json`;
+            await salvarFicheiroNoGithub(caminhoHist, relatorioHistorico, `Arquivo Semana ${dataSemana.formatadoLegivel}`);
 
+            // 2. Limpar dados atuais
             registos = [];
             localStorage.removeItem('entregas_v2');
+            await salvarFicheiroNoGithub('pedeja/dados_atuais.json', [], 'Reset de início de semana');
+
             renderizar();
-
-            alert(`Semana fechada com sucesso!\nFicheiro "${nomeFicheiro}" guardado.`);
-        }
-
-        /* --- EXPORTAR / IMPORTAR DIRETO --- */
-        function exportarFicheiro() {
-            if (registos.length === 0) {
-                alert("Não existem registos para exportar.");
-                return;
-            }
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registos, null, 2));
-            const a = document.createElement('a');
-            a.setAttribute("href", dataStr);
-            a.setAttribute("download", "entregas_backup.json");
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        }
-
-        function importarFicheiro(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const dados = JSON.parse(e.target.result);
-                    const lista = Array.isArray(dados) ? dados : (dados.registos || null);
-                    
-                    if (lista && Array.isArray(lista)) {
-                        registos = lista;
-                        renderizar();
-                        alert("Dados importados com sucesso!");
-                    } else {
-                        alert("Formato de ficheiro não reconhecido.");
-                    }
-                } catch (err) {
-                    alert("Erro ao ler o ficheiro JSON.");
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
+            alert(`Semana fechada e guardada no GitHub com sucesso!`);
         }
 
         function fecharModalFora(e, overlayId) {
@@ -791,8 +850,11 @@
             }
         }
 
-        // Inicializar aplicação
+        // Inicialização
         renderizar();
+        if (ghConfig.token) {
+            sincronizarComGithub(true);
+        }
     </script>
 </body>
 </html>
