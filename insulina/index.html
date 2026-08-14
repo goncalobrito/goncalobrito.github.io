@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2382/2382533.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2382/2382533.png">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Glicemia">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="application-name" content="Glicemia Mãe">
+
+    <meta name="theme-color" content="#f0f2f5">
+
+    <link rel="icon" sizes="512x512" href="https://cdn-icons-png.flaticon.com/512/2382/2382533.png">
+
+    <meta name="theme-color" content="#f0f2f5">
+    <title>Glicemia Mãe</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 30px; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #1c1e21; text-align: center; margin-bottom: 25px; }
+        label { font-weight: bold; display: block; margin-bottom: 8px; color: #4b4f56; }
+        select, input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #007aff; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        #resultado { margin-top: 25px; padding: 20px; border-radius: 12px; text-align: center; display: none; }
+        .u-box { font-size: 40px; font-weight: bold; display: block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Cálculo de Insulina</h2>
+    
+    <label>Momento do Dia:</label>
+    <select id="momento">
+        <option value="peq">Antes do Peq. Almoço</option>
+        <option value="alm">Antes do Almoço</option>
+        <option value="lt">Antes do Lanche (LT)</option>
+        <option value="jan">Antes do Jantar</option>
+        <option value="ceia">Antes da Ceia</option>
+    </select>
+
+    <label>Valor da Glicemia (mg/dL):</label>
+    <input type="number" id="glicemia" placeholder="Ex: 150">
+
+    <button onclick="calcular()">Calcular Dose</button>
+
+    <div id="resultado">
+        <span id="msg">Dose Recomendada:</span>
+        <span class="u-box" id="dose">0 U</span>
+    </div>
+</div>
+
+<script>
+function calcular() {
+    const g = parseInt(document.getElementById('glicemia').value);
+    const m = document.getElementById('momento').value;
+    let res = 0;
+    let cor = "#e7f3ff"; // azul claro default
+    let txtCor = "#007aff";
+
+    if (isNaN(g)) return alert("Insira um valor válido");
+
+    if (m === 'peq') {
+        if (g < 80) res = 0;
+        else if (g <= 120) res = 2; else if (g <= 160) res = 3; else if (g <= 220) res = 4;
+        else if (g <= 280) res = 5; else if (g <= 340) res = 6; else if (g <= 400) res = 7;
+        else res = 8;
+    } 
+    else if (m === 'alm') {
+        if (g < 80) { res = "Não corrige"; cor = "#fff0f0"; txtCor = "#d93025"; }
+        else if (g <= 100) res = 4; else if (g <= 160) res = 5; else if (g <= 220) res = 6;
+        else if (g <= 280) res = 7; else if (g <= 340) res = 8; else if (g <= 400) res = 9;
+        else res = 10;
+    }
+    else if (m === 'lt') {
+        if (g < 100) res = 0;
+        else if (g <= 150) res = 4; else if (g <= 200) res = 5; else if (g <= 250) res = 6;
+        else if (g <= 300) res = 7; else if (g <= 350) res = 8; else if (g <= 400) res = 9;
+        else res = 10;
+    }
+    else if (m === 'jan') {
+        if (g < 100) res = 0;
+        else if (g <= 150) res = 3; else if (g <= 200) res = 4; else if (g <= 250) res = 5;
+        else if (g <= 300) res = 6; else if (g <= 350) res = 7; else if (g <= 400) res = 8;
+        else res = 9;
+    }
+    else if (m === 'ceia') {
+        if (g < 200) res = 0;
+        else if (g <= 300) res = 2;
+        else res = 3;
+    }
+
+    const box = document.getElementById('resultado');
+    box.style.display = "block";
+    box.style.backgroundColor = cor;
+    box.style.color = txtCor;
+    document.getElementById('dose').innerText = (typeof res === "number") ? res + " U" : res;
+}
+</script>
+
+</body>
+</html>

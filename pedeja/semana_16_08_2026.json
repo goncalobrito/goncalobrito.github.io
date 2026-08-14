@@ -1,0 +1,53 @@
+{
+  "semana_fim": "16/08/2026",
+  "resumo": {
+    "lucro_total": "32.90€",
+    "valor_a_dar_total": "27.25€",
+    "balanco_geral": "60.15€",
+    "total_pedidos": 6
+  },
+  "registos": [
+    {
+      "dia": "Segunda-Feira",
+      "local": "bom gosto",
+      "pagou": 29.9,
+      "paguei": 19.6,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Segunda-Feira",
+      "local": "mc",
+      "pagou": 22.5,
+      "paguei": 15.6,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "padaria vila",
+      "pagou": 19.65,
+      "paguei": 9.35,
+      "taxaEntrega": 5.5
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "divinal",
+      "pagou": 55,
+      "paguei": 47.1,
+      "taxaEntrega": 2.8
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "mc",
+      "pagou": 35.2,
+      "paguei": 22.4,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "divinal",
+      "pagou": 28.7,
+      "paguei": 16.75,
+      "taxaEntrega": 6.9
+    }
+  ]
+}

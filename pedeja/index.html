@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor Semanal de Entregas</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --accent-orange: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 40px; }
+
+        /* Navbar */
+        .navbar {
+            background-color: #1e293b;
+            border-bottom: 1px solid var(--card-border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .navbar-brand { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .navbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid var(--card-border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: #475569; }
+        .nav-btn-history { border-color: var(--accent-purple); color: #c4b5fd; background: rgba(139, 92, 246, 0.15); }
+        .nav-btn-history:hover { background: var(--accent-purple); color: #fff; }
+        .nav-btn-import { border-color: #3b82f6; }
+        .nav-btn-export { border-color: #10b981; }
+        .nav-btn-reset { border-color: var(--accent-danger); background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+        .nav-btn-reset:hover { background: var(--accent-danger); color: #fff; }
+
+        /* Content Container */
+        .container { max-width: 1200px; margin: 20px auto 0 auto; padding: 0 16px; }
+
+        /* Resumo Global */
+        .resumo-global {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .box-global { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; }
+        .box-lucro { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-orange); color: #fbbf24; }
+        .box-adar { background: rgba(236, 72, 153, 0.15); border: 1px solid var(--accent-pink); color: #f472b6; }
+        .box-total { background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue); color: #60a5fa; }
+        .box-global span { display: block; font-size: 1.4rem; margin-top: 5px; }
+
+        /* 7 Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .day-title { font-size: 1.1rem; font-weight: bold; }
+        .count-tag { font-size: 0.8rem; background: #334155; padding: 2px 8px; border-radius: 12px; color: var(--text-muted); }
+
+        .day-stats {
+            display: flex;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .stat-item { text-align: center; }
+        .stat-item small { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+        .stat-item b { font-size: 1rem; }
+
+        /* Botões */
+        .day-actions { display: flex; gap: 10px; }
+        .btn-action {
+            background: #334155;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .btn-action:hover { background: #475569; }
+        .btn-plus { flex: 2; background: #2563eb; font-weight: bold; }
+        .btn-plus:hover { background: #1d4ed8; }
+        .btn-eye { flex: 1; font-size: 1.2rem; }
+
+        /* --- MODAIS GERAIS --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .modal-card-large { max-width: 750px; }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.7); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            background: #0f172a;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        
+        .btn-modal-close {
+            background: #334155;
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .btn-modal-close:hover { background: #ef4444; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+
+        /* Formulários */
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .full-width { grid-column: span 2; }
+        label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block; }
+        input {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        input:focus { outline: none; border-color: var(--accent-blue); }
+        
+        .btn-submit {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+        .btn-submit:hover { background: #059669; }
+
+        /* Tabelas */
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.9rem; }
+        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--card-border); }
+        th { color: var(--text-muted); background: #0f172a; }
+        .btn-tbl { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        .btn-tbl-edit { background: #eab308; color: #000; font-weight: bold; }
+        .btn-tbl-del { background: #ef4444; color: #fff; margin-left: 4px; font-weight: bold; }
+
+        /* --- ZONA DRAG & DROP DO HISTÓRICO --- */
+        .dropzone {
+            border: 2px dashed #475569;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            background: #0f172a;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 20px;
+        }
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.08);
+        }
+        .dropzone-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .dropzone p { color: var(--text-muted); font-size: 0.9rem; }
+        .dropzone span { color: var(--accent-purple); font-weight: bold; }
+
+        .history-summary-box {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">🛵 <span>Entregas Semanal</span></div>
+        <div class="navbar-actions">
+            <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Ver Histórico</button>
+            <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importarFicheiro(event)">
+            <button class="nav-btn nav-btn-import" onclick="document.getElementById('fileInput').click()">📂 Importar</button>
+            <button class="nav-btn nav-btn-export" onclick="exportarFicheiro()">💾 Exportar</button>
+            <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹 Fechar Semana</button>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container">
+        <!-- Resumo Global -->
+        <div class="resumo-global">
+            <div class="box-global box-lucro">Meu Lucro Total <span id="gloLucro">0.00€</span></div>
+            <div class="box-global box-adar">Valor a Dar Total <span id="gloAdar">0.00€</span></div>
+            <div class="box-global box-total">Balanço Geral <span id="gloTotal">0.00€</span></div>
+        </div>
+
+        <!-- 7 Cards -->
+        <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+
+    <!-- MODAL FORMULÁRIO -->
+    <div class="modal-overlay" id="modalFormOverlay" onclick="fecharModalFora(event, 'modalFormOverlay')">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalFormTitulo">➕ Registar Entrega</h3>
+                <button class="btn-modal-close" onclick="fecharModalForm()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        <label>Nome do Local / Restaurante</label>
+                        <input type="text" id="formLocal" placeholder="ex: mc, divinal, padaria">
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Valor Pago pelo Cliente (€)</label>
+                            <input type="number" step="0.01" id="formPagou" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label>Valor que Paguei no Local (€)</label>
+                            <input type="number" step="0.01" id="formPaguei" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Taxa de Entrega (Meu Lucro) (€)</label>
+                        <input type="number" step="0.01" id="formTaxa" placeholder="0.00">
+                    </div>
+                    <button class="btn-submit" id="btnSubmitForm" onclick="submeterFormulario()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LISTA DE PEDIDOS DO DIA -->
+    <div class="modal-overlay" id="modalListOverlay" onclick="fecharModalFora(event, 'modalListOverlay')">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalListTitulo">📦 Pedidos</h3>
+                <button class="btn-modal-close" onclick="fecharModalList()">✕</button>
+            </div>
+            <div class="modal-body" id="modalListConteudo"></div>
+        </div>
+    </div>
+
+    <!-- MODAL HISTÓRICO DE UMA SEMANA (DRAG & DROP) -->
+    <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
+        <div class="modal-card modal-card-large">
+            <div class="modal-header">
+                <h3>📜 Análise de Histórico de Semana</h3>
+                <button class="btn-modal-close" onclick="fecharModalHistorico()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Dropzone de Ficheiros -->
+                <div class="dropzone" id="dropzone" onclick="document.getElementById('historyFileInput').click()">
+                    <input type="file" id="historyFileInput" accept=".json" style="display: none;" onchange="processarFicheiroHistorico(this.files[0])">
+                    <div class="dropzone-icon">📁</div>
+                    <p>Arrasta para aqui o ficheiro <b>.json</b> da semana ou <span>procura no computador</span></p>
+                </div>
+
+                <!-- Detalhes do Histórico Analisado -->
+                <div id="historyResult" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const diasSemana = [
+            "Segunda-Feira", "Terça-Feira", "Quarta-Feira", 
+            "Quinta-Feira", "Sexta-Feira", "Sábado", "Domingo"
+        ];
+
+        let registos = JSON.parse(localStorage.getItem('entregas_v2')) || [];
+        let diaAtivo = null;
+        let idEdicao = null;
+
+        function calcularTotais(lista = registos) {
+            let lucro = 0, adar = 0;
+            lista.forEach(r => {
+                const taxa = parseFloat(r.taxaEntrega) || 0;
+                const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                const valorAdar = valTaxas - taxa;
+
+                lucro += taxa;
+                adar += valorAdar;
+            });
+            return { lucro, adar, total: lucro + adar, count: lista.length };
+        }
+
+        function renderizar() {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            const globais = calcularTotais(registos);
+            document.getElementById('gloLucro').innerText = globais.lucro.toFixed(2) + '€';
+            document.getElementById('gloAdar').innerText = globais.adar.toFixed(2) + '€';
+            document.getElementById('gloTotal').innerText = globais.total.toFixed(2) + '€';
+
+            diasSemana.forEach(dia => {
+                const filtrados = registos.filter(r => r.dia === dia);
+                const stats = calcularTotais(filtrados);
+
+                grid.innerHTML += `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <span class="day-title">${dia}</span>
+                            <span class="count-tag">${stats.count} pedidos</span>
+                        </div>
+
+                        <div class="day-stats">
+                            <div class="stat-item">
+                                <small>Lucro</small>
+                                <b style="color: #fbbf24;">${stats.lucro.toFixed(2)}€</b>
+                            </div>
+                            <div class="stat-item">
+                                <small>A Dar</small>
+                                <b style="color: #f472b6;">${stats.adar.toFixed(2)}€</b>
+                            </div>
+                            <div class="stat-item">
+                                <small>Total</small>
+                                <b>${stats.total.toFixed(2)}€</b>
+                            </div>
+                        </div>
+
+                        <div class="day-actions">
+                            <button class="btn-action btn-plus" onclick="abrirModalForm('${dia}')">➕ Registar</button>
+                            <button class="btn-action btn-eye" onclick="abrirModalList('${dia}')">👁</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            localStorage.setItem('entregas_v2', JSON.stringify(registos));
+        }
+
+        /* --- MODAL FORMULÁRIO --- */
+        function abrirModalForm(dia, indexEditar = null) {
+            diaAtivo = dia;
+            idEdicao = indexEditar;
+
+            const modal = document.getElementById('modalFormOverlay');
+            const titulo = document.getElementById('modalFormTitulo');
+            const btnSubmit = document.getElementById('btnSubmitForm');
+
+            if (indexEditar !== null) {
+                const item = registos[indexEditar];
+                titulo.innerText = `✏️ Editar Entrega (${dia})`;
+                btnSubmit.innerText = "Atualizar Entrega";
+
+                document.getElementById('formLocal').value = item.local;
+                document.getElementById('formPagou').value = item.pagou;
+                document.getElementById('formPaguei').value = item.paguei;
+                document.getElementById('formTaxa').value = item.taxaEntrega;
+            } else {
+                titulo.innerText = `➕ Registar Entrega (${dia})`;
+                btnSubmit.innerText = "Adicionar Entrega";
+                limparFormulario();
+            }
+
+            modal.classList.add('active');
+            setTimeout(() => document.getElementById('formLocal').focus(), 100);
+        }
+
+        function fecharModalForm() {
+            document.getElementById('modalFormOverlay').classList.remove('active');
+            limparFormulario();
+            diaAtivo = null;
+            idEdicao = null;
+        }
+
+        function submeterFormulario() {
+            const local = document.getElementById('formLocal').value.trim();
+            const pagou = parseFloat(document.getElementById('formPagou').value) || 0;
+            const paguei = parseFloat(document.getElementById('formPaguei').value) || 0;
+            const taxaEntrega = parseFloat(document.getElementById('formTaxa').value) || 0;
+
+            if (!local) {
+                alert("Por favor, preenche o nome do local.");
+                return;
+            }
+
+            const payload = { dia: diaAtivo, local, pagou, paguei, taxaEntrega };
+
+            if (idEdicao !== null) {
+                registos[idEdicao] = payload;
+            } else {
+                registos.push(payload);
+            }
+
+            fecharModalForm();
+            renderizar();
+        }
+
+        function limparFormulario() {
+            document.getElementById('formLocal').value = '';
+            document.getElementById('formPagou').value = '';
+            document.getElementById('formPaguei').value = '';
+            document.getElementById('formTaxa').value = '';
+        }
+
+        /* --- MODAL LISTA DE PEDIDOS --- */
+        function abrirModalList(dia) {
+            diaAtivo = dia;
+            document.getElementById('modalListTitulo').innerText = `📦 Pedidos de ${dia}`;
+            renderizarListaDia(dia);
+            document.getElementById('modalListOverlay').classList.add('active');
+        }
+
+        function fecharModalList() {
+            document.getElementById('modalListOverlay').classList.remove('active');
+            diaAtivo = null;
+        }
+
+        function renderizarListaDia(dia) {
+            const entregas = registos.filter(r => r.dia === dia);
+            const container = document.getElementById('modalListConteudo');
+
+            if (entregas.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px;">Nenhum pedido registado para este dia.</p>`;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Local</th>
+                            <th>Pagou</th>
+                            <th>Paguei</th>
+                            <th>Taxa</th>
+                            <th>A Dar</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            entregas.forEach(r => {
+                const indexReal = registos.indexOf(r);
+                const valTaxas = r.pagou - r.paguei;
+                const valAdar = valTaxas - r.taxaEntrega;
+
+                html += `
+                    <tr>
+                        <td><b>${r.local}</b></td>
+                        <td>${r.pagou.toFixed(2)}€</td>
+                        <td>${r.paguei.toFixed(2)}€</td>
+                        <td>${r.taxaEntrega.toFixed(2)}€</td>
+                        <td style="color: #f472b6;"><b>${valAdar.toFixed(2)}€</b></td>
+                        <td>
+                            <button class="btn-tbl btn-tbl-edit" onclick="iniciarEdicaoViaModal(${indexReal})">✏️</button>
+                            <button class="btn-tbl btn-tbl-del" onclick="removerRegisto(${indexReal})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        function iniciarEdicaoViaModal(index) {
+            const item = registos[index];
+            fecharModalList();
+            abrirModalForm(item.dia, index);
+        }
+
+        function removerRegisto(index) {
+            if (confirm("Tens a certeza que queres apagar este pedido?")) {
+                const diaAtual = registos[index].dia;
+                registos.splice(index, 1);
+                renderizar();
+                renderizarListaDia(diaAtual);
+            }
+        }
+
+        /* --- MODAL HISTÓRICO & DRAG AND DROP --- */
+        function abrirModalHistorico() {
+            document.getElementById('historyResult').style.display = 'none';
+            document.getElementById('modalHistoryOverlay').classList.add('active');
+        }
+
+        function fecharModalHistorico() {
+            document.getElementById('modalHistoryOverlay').classList.remove('active');
+        }
+
+        // Configuração Drag and Drop
+        const dropzone = document.getElementById('dropzone');
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) processarFicheiroHistorico(files[0]);
+        });
+
+        function processarFicheiroHistorico(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    renderizarResultadoHistorico(dados);
+                } catch (err) {
+                    alert("Erro ao ler o ficheiro JSON de histórico.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function renderizarResultadoHistorico(dados) {
+            const container = document.getElementById('historyResult');
+            const lista = Array.isArray(dados) ? dados : (dados.registos || []);
+            const semanaFim = dados.semana_fim || "Data não especificada";
+            const totais = calcularTotais(lista);
+
+            let html = `
+                <div class="history-summary-box">
+                    <div><small style="color:var(--text-muted);">Semana de</small><br><b>${semanaFim}</b></div>
+                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                    <div><small style="color:var(--text-muted);">A Dar</small><br><b style="color:#f472b6;">${totais.adar.toFixed(2)}€</b></div>
+                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+                </div>
+
+                <h4 style="margin-top: 15px; margin-bottom: 10px;">📋 Pedidos da Semana (${lista.length} registos)</h4>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dia</th>
+                                <th>Local</th>
+                                <th>Pagou</th>
+                                <th>Paguei</th>
+                                <th>Taxa</th>
+                                <th>A Dar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            lista.forEach(r => {
+                const valTaxas = (r.pagou || 0) - (r.paguei || 0);
+                const valAdar = valTaxas - (r.taxaEntrega || 0);
+                html += `
+                    <tr>
+                        <td><b>${r.dia}</b></td>
+                        <td>${r.local}</td>
+                        <td>${r.pagou.toFixed(2)}€</td>
+                        <td>${r.paguei.toFixed(2)}€</td>
+                        <td>${r.taxaEntrega.toFixed(2)}€</td>
+                        <td style="color:#f472b6;">${valAdar.toFixed(2)}€</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn-submit" style="margin-top: 15px; background: #3b82f6;" onclick='restaurarSemanaHistorico(${JSON.stringify(lista)})'>
+                    🔄 Carregar/Restaurar esta semana para o Painel
+                </button>
+            `;
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function restaurarSemanaHistorico(lista) {
+            if (confirm("Desejas colocar estes dados históricos no teu painel de edição atual?")) {
+                registos = lista;
+                renderizar();
+                fecharModalHistorico();
+                alert("Semana restaurada no painel principal!");
+            }
+        }
+
+        /* --- OBTER DATA DO FIM DA SEMANA (DOMINGO) --- */
+        function obterDataFimSemana() {
+            const hoje = new Date();
+            const diaSemana = hoje.getDay(); 
+            const diasAteDomingo = (diaSemana === 0) ? 0 : (7 - diaSemana);
+            
+            const domingo = new Date(hoje);
+            domingo.setDate(hoje.getDate() + diasAteDomingo);
+
+            const dia = String(domingo.getDate()).padStart(2, '0');
+            const mes = String(domingo.getMonth() + 1).padStart(2, '0');
+            const ano = domingo.getFullYear();
+
+            return {
+                formatadoLegivel: `${dia}/${mes}/${ano}`,
+                formatadoFicheiro: `${dia}_${mes}_${ano}`
+            };
+        }
+
+        /* --- FECHAR SEMANA --- */
+        function fecharSemana() {
+            if (registos.length === 0) {
+                alert("Não existem dados registados para fechar a semana.");
+                return;
+            }
+
+            const dataSemana = obterDataFimSemana();
+            const confirmacao = confirm(
+                `Desejas fechar a semana terminada em ${dataSemana.formatadoLegivel}?\n\n` +
+                `1. O ficheiro histórico será guardado.\n` +
+                `2. Todas as cards serão limpas a zeros para a nova semana.`
+            );
+
+            if (!confirmacao) return;
+
+            const totais = calcularTotais(registos);
+            const relatorioHistorico = {
+                semana_fim: dataSemana.formatadoLegivel,
+                resumo: {
+                    lucro_total: totais.lucro.toFixed(2) + "€",
+                    valor_a_dar_total: totais.adar.toFixed(2) + "€",
+                    balanco_geral: totais.total.toFixed(2) + "€",
+                    total_pedidos: totais.count
+                },
+                registos: registos
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(relatorioHistorico, null, 2));
+            const nomeFicheiro = `semana_${dataSemana.formatadoFicheiro}.json`;
+            
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", nomeFicheiro);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            registos = [];
+            localStorage.removeItem('entregas_v2');
+            renderizar();
+
+            alert(`Semana fechada com sucesso!\nFicheiro "${nomeFicheiro}" guardado.`);
+        }
+
+        /* --- EXPORTAR / IMPORTAR DIRETO --- */
+        function exportarFicheiro() {
+            if (registos.length === 0) {
+                alert("Não existem registos para exportar.");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registos, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", "entregas_backup.json");
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function importarFicheiro(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    const lista = Array.isArray(dados) ? dados : (dados.registos || null);
+                    
+                    if (lista && Array.isArray(lista)) {
+                        registos = lista;
+                        renderizar();
+                        alert("Dados importados com sucesso!");
+                    } else {
+                        alert("Formato de ficheiro não reconhecido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o ficheiro JSON.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function fecharModalFora(e, overlayId) {
+            if (e.target.id === overlayId) {
+                document.getElementById(overlayId).classList.remove('active');
+            }
+        }
+
+        // Inicializar aplicação
+        renderizar();
+    </script>
+</body>
+</html>
