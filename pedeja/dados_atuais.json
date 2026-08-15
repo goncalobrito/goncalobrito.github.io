@@ -40,5 +40,12 @@
     "pagou": 28.7,
     "paguei": 16.75,
     "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Sábado",
+    "local": "furna",
+    "pagou": 51.7,
+    "paguei": 31.1,
+    "taxaEntrega": 6.9
   }
 ]
