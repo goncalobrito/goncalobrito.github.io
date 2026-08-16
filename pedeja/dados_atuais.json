@@ -96,5 +96,12 @@
     "pagou": 57.2,
     "paguei": 30.23,
     "taxaEntrega": 8.5
+  },
+  {
+    "dia": "Domingo",
+    "local": "fu hao",
+    "pagou": 27.9,
+    "paguei": 18.15,
+    "taxaEntrega": 3.9
   }
 ]
