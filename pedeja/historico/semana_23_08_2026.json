@@ -1,0 +1,88 @@
+{
+  "semana_fim": "23/08/2026",
+  "resumo": {
+    "lucro_total": "58.90€",
+    "valor_a_dar_total": "72.67€",
+    "balanco_geral": "131.57€",
+    "total_pedidos": 11
+  },
+  "registos": [
+    {
+      "dia": "Segunda-Feira",
+      "local": "bom gosto",
+      "pagou": 29.9,
+      "paguei": 19.6,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Segunda-Feira",
+      "local": "mc",
+      "pagou": 22.5,
+      "paguei": 15.6,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "padaria vila",
+      "pagou": 19.65,
+      "paguei": 9.35,
+      "taxaEntrega": 5.5
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "divinal",
+      "pagou": 55,
+      "paguei": 47.1,
+      "taxaEntrega": 2.8
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "mc",
+      "pagou": 35.2,
+      "paguei": 22.4,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "divinal",
+      "pagou": 28.7,
+      "paguei": 16.75,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "furna",
+      "pagou": 51.7,
+      "paguei": 31.1,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "chuva",
+      "pagou": 14.9,
+      "paguei": 7.8,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "Ratatui",
+      "pagou": 57.2,
+      "paguei": 30.23,
+      "taxaEntrega": 8.5
+    },
+    {
+      "dia": "Sábado",
+      "local": "Fu Hao",
+      "pagou": 27.9,
+      "paguei": 18.15,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "Mc",
+      "pagou": 26.8,
+      "paguei": 19.8,
+      "taxaEntrega": 2.8
+    }
+  ]
+}
