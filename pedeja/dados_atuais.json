@@ -12,5 +12,12 @@
     "pagou": 21.8,
     "paguei": 15.65,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "bom gosto",
+    "pagou": 14,
+    "paguei": 9.15,
+    "taxaEntrega": 2.8
   }
 ]
