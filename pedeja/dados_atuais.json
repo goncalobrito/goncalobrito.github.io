@@ -26,5 +26,12 @@
     "pagou": 31.3,
     "paguei": 22.85,
     "taxaEntrega": 5.5
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "Mc",
+    "pagou": 52.1,
+    "paguei": 33.95,
+    "taxaEntrega": 6.9
   }
 ]
