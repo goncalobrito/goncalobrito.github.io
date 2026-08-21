@@ -68,5 +68,12 @@
     "pagou": 13.8,
     "paguei": 13,
     "taxaEntrega": 5.5
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "Chuva",
+    "pagou": 18.9,
+    "paguei": 10.3,
+    "taxaEntrega": 3.9
   }
 ]
