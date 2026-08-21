@@ -61,5 +61,12 @@
     "pagou": 70.35,
     "paguei": 41.05,
     "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "Loja conveniência",
+    "pagou": 13.8,
+    "paguei": 13,
+    "taxaEntrega": 5.5
   }
 ]
