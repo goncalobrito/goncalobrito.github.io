@@ -47,5 +47,12 @@
     "pagou": 31.3,
     "paguei": 22.55,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "padaria vila",
+    "pagou": 0,
+    "paguei": 0,
+    "taxaEntrega": 0
   }
 ]
