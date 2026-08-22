@@ -96,5 +96,12 @@
     "pagou": 11.9,
     "paguei": 6.35,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Sábado",
+    "local": "bom gosto",
+    "pagou": 26.6,
+    "paguei": 19.55,
+    "taxaEntrega": 3.9
   }
 ]
