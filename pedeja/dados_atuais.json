@@ -82,5 +82,12 @@
     "pagou": 51.7,
     "paguei": 38.95,
     "taxaEntrega": 5.8
+  },
+  {
+    "dia": "Sábado",
+    "local": "ratatui",
+    "pagou": 35.15,
+    "paguei": 21.58,
+    "taxaEntrega": 5.5
   }
 ]
