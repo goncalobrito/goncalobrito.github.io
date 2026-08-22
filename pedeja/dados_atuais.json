@@ -103,5 +103,12 @@
     "pagou": 26.6,
     "paguei": 19.55,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Sábado",
+    "local": "mc",
+    "pagou": 38.1,
+    "paguei": 26.55,
+    "taxaEntrega": 6.9
   }
 ]
