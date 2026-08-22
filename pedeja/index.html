@@ -116,6 +116,8 @@
         .box-adar { background: rgba(236, 72, 153, 0.15); border: 1px solid var(--accent-pink); color: #f472b6; }
         .box-total { background: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue); color: #60a5fa; }
         .box-global span { display: block; font-size: 1.1rem; margin-top: 4px; }
+        .valor-adar { color: #f472b6; }
+        .valor-devem { color: #c084fc; }
 
         /* Grid de Cards */
         .cards-grid {
@@ -455,18 +457,30 @@
             return { lucro, adar, total: lucro + adar, count: lista.length };
         }
 
+        function formatarValorAdar(valor) {
+            const valorNumerico = parseFloat(valor) || 0;
+            const deve = valorNumerico < 0;
+            return {
+                texto: deve ? `Devem ${Math.abs(valorNumerico).toFixed(2)}€` : `${valorNumerico.toFixed(2)}€`,
+                classe: deve ? 'valor-devem' : 'valor-adar'
+            };
+        }
+
         function renderizar() {
             const grid = document.getElementById('cardsGrid');
             grid.innerHTML = '';
 
             const globais = calcularTotais(registos);
+            const adarGlobal = formatarValorAdar(globais.adar);
             document.getElementById('gloLucro').innerText = globais.lucro.toFixed(2) + '€';
-            document.getElementById('gloAdar').innerText = globais.adar.toFixed(2) + '€';
+            document.getElementById('gloAdar').innerText = adarGlobal.texto;
+            document.getElementById('gloAdar').className = adarGlobal.classe;
             document.getElementById('gloTotal').innerText = globais.total.toFixed(2) + '€';
 
             diasSemana.forEach(dia => {
                 const filtrados = registos.filter(r => r.dia === dia);
                 const stats = calcularTotais(filtrados);
+                const adarDia = formatarValorAdar(stats.adar);
 
                 grid.innerHTML += `
                     <div class="day-card">
@@ -482,7 +496,7 @@
                             </div>
                             <div class="stat-item">
                                 <small>A Dar</small>
-                                <b style="color: #f472b6;">${stats.adar.toFixed(2)}€</b>
+                                <b class="${adarDia.classe}">${adarDia.texto}</b>
                             </div>
                             <div class="stat-item">
                                 <small>Total</small>
@@ -683,6 +697,7 @@
                 const indexReal = registos.indexOf(r);
                 const valTaxas = r.pagou - r.paguei;
                 const valAdar = valTaxas - r.taxaEntrega;
+                const adarPedido = formatarValorAdar(valAdar);
 
                 html += `
                     <tr>
@@ -690,7 +705,7 @@
                         <td>${r.pagou.toFixed(2)}€</td>
                         <td>${r.paguei.toFixed(2)}€</td>
                         <td>${r.taxaEntrega.toFixed(2)}€</td>
-                        <td style="color: #f472b6;"><b>${valAdar.toFixed(2)}€</b></td>
+                        <td><b class="${adarPedido.classe}">${adarPedido.texto}</b></td>
                         <td>
                             <button class="btn-tbl btn-tbl-edit" onclick="iniciarEdicaoViaModal(${indexReal})">✏️</button>
                             <button class="btn-tbl btn-tbl-del" onclick="removerRegisto(${indexReal})">🗑️</button>
@@ -783,6 +798,7 @@
 
                 listArea.style.display = 'none';
                 detailArea.style.display = 'block';
+                const adarHistorico = formatarValorAdar(totais.adar);
 
                 let html = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -794,7 +810,7 @@
 
                     <div style="background:#0f172a; padding:10px; border-radius:10px; border:1px solid var(--card-border); margin-bottom:12px; display:grid; grid-template-columns: repeat(3, 1fr); text-align:center; font-size:0.8rem;">
                         <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
-                        <div><small style="color:var(--text-muted);">A Dar</small><br><b style="color:#f472b6;">${totais.adar.toFixed(2)}€</b></div>
+                        <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adarHistorico.classe}">${adarHistorico.texto}</b></div>
                         <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
                     </div>
 
@@ -809,6 +825,7 @@
                 lista.forEach(r => {
                     const valTaxas = (r.pagou || 0) - (r.paguei || 0);
                     const valAdar = valTaxas - (r.taxaEntrega || 0);
+                    const adarPedido = formatarValorAdar(valAdar);
                     html += `
                         <tr>
                             <td><b>${r.dia}</b></td>
@@ -816,7 +833,7 @@
                             <td>${r.pagou.toFixed(2)}€</td>
                             <td>${r.paguei.toFixed(2)}€</td>
                             <td>${r.taxaEntrega.toFixed(2)}€</td>
-                            <td style="color:#f472b6;">${valAdar.toFixed(2)}€</td>
+                            <td class="${adarPedido.classe}">${adarPedido.texto}</td>
                         </tr>
                     `;
                 });
@@ -878,11 +895,12 @@
             if (!confirmacao) return;
 
             const totais = calcularTotais(registos);
+            const adarResumo = formatarValorAdar(totais.adar);
             const relatorioHistorico = {
                 semana_fim: dataSemana.formatadoLegivel,
                 resumo: {
                     lucro_total: totais.lucro.toFixed(2) + "€",
-                    valor_a_dar_total: totais.adar.toFixed(2) + "€",
+                    valor_a_dar_total: adarResumo.texto,
                     balanco_geral: totais.total.toFixed(2) + "€",
                     total_pedidos: totais.count
                 },
