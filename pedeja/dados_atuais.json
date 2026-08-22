@@ -68,5 +68,12 @@
     "pagou": 18.9,
     "paguei": 10.3,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "divinal",
+    "pagou": 54.57,
+    "paguei": 37.75,
+    "taxaEntrega": 5.5
   }
 ]
