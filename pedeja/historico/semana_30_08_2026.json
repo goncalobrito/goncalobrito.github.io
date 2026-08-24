@@ -1,0 +1,123 @@
+{
+  "semana_fim": "30/08/2026",
+  "resumo": {
+    "lucro_total": "75.90€",
+    "valor_a_dar_total": "84.49€",
+    "balanco_geral": "160.39€",
+    "total_pedidos": 16
+  },
+  "registos": [
+    {
+      "dia": "Quarta-Feira",
+      "local": "gosto muito",
+      "pagou": 6.8,
+      "paguei": 4,
+      "taxaEntrega": 2.8
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "bom gosto",
+      "pagou": 21.8,
+      "paguei": 15.65,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "bom gosto",
+      "pagou": 14,
+      "paguei": 9.15,
+      "taxaEntrega": 2.8
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "bom gosto",
+      "pagou": 31.3,
+      "paguei": 22.85,
+      "taxaEntrega": 5.5
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "Mc",
+      "pagou": 52.1,
+      "paguei": 33.95,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Quinta-Feira",
+      "local": "bom gosto",
+      "pagou": 20.8,
+      "paguei": 15.55,
+      "taxaEntrega": 2.8
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "mc",
+      "pagou": 31.3,
+      "paguei": 22.55,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "padaria vila",
+      "pagou": 70.35,
+      "paguei": 41.05,
+      "taxaEntrega": 6.9
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "Loja conveniência",
+      "pagou": 13.8,
+      "paguei": 13,
+      "taxaEntrega": 5
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "Chuva",
+      "pagou": 18.9,
+      "paguei": 10.3,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "divinal",
+      "pagou": 54.57,
+      "paguei": 37.75,
+      "taxaEntrega": 5.5
+    },
+    {
+      "dia": "Sexta-Feira",
+      "local": "mc",
+      "pagou": 51.7,
+      "paguei": 38.95,
+      "taxaEntrega": 5.8
+    },
+    {
+      "dia": "Sábado",
+      "local": "ratatui",
+      "pagou": 35.15,
+      "paguei": 21.58,
+      "taxaEntrega": 5.5
+    },
+    {
+      "dia": "Sábado",
+      "local": "mc",
+      "pagou": 11.9,
+      "paguei": 6.35,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "bom gosto",
+      "pagou": 26.6,
+      "paguei": 19.55,
+      "taxaEntrega": 3.9
+    },
+    {
+      "dia": "Sábado",
+      "local": "mc",
+      "pagou": 38.1,
+      "paguei": 26.55,
+      "taxaEntrega": 6.9
+    }
+  ]
+}
