@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "dia": "Terça-Feira",
+    "local": "BK",
+    "pagou": 58.7,
+    "paguei": 42.46,
+    "taxaEntrega": 5.5
+  }
+]
