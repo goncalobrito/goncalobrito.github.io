@@ -61,5 +61,12 @@
     "pagou": 0,
     "paguei": 10.3,
     "taxaEntrega": 0
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "MC",
+    "pagou": 0,
+    "paguei": 13.4,
+    "taxaEntrega": 0
   }
 ]
