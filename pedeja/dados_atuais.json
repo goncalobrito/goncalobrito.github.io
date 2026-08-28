@@ -54,5 +54,12 @@
     "pagou": 0,
     "paguei": 18.05,
     "taxaEntrega": 0
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "chuva",
+    "pagou": 0,
+    "paguei": 10.3,
+    "taxaEntrega": 0
   }
 ]
