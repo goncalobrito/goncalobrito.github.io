@@ -26,5 +26,12 @@
     "pagou": 15.7,
     "paguei": 11.55,
     "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "ao barrote",
+    "pagou": 46.2,
+    "paguei": 34.85,
+    "taxaEntrega": 3.9
   }
 ]
