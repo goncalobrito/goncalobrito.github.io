@@ -33,5 +33,12 @@
     "pagou": 46.2,
     "paguei": 34.85,
     "taxaEntrega": 3.9
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "bom gosto",
+    "pagou": 0,
+    "paguei": 18.85,
+    "taxaEntrega": 0
   }
 ]
