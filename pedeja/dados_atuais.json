@@ -82,5 +82,12 @@
     "pagou": 0,
     "paguei": 25.2,
     "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Sábado",
+    "local": "chuva",
+    "pagou": 14.9,
+    "paguei": 7.8,
+    "taxaEntrega": 2.8
   }
 ]
