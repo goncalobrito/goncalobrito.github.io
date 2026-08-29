@@ -75,5 +75,12 @@
     "pagou": 51.1,
     "paguei": 34,
     "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Sábado",
+    "local": "bel piato",
+    "pagou": 0,
+    "paguei": 25.2,
+    "taxaEntrega": 2.8
   }
 ]
