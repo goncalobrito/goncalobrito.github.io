@@ -865,16 +865,24 @@
         /* --- FECHAR SEMANA --- */
         function obterDataFimSemana() {
             const hoje = new Date();
-            const diaSemana = hoje.getDay(); 
-            const diasAteDomingo = (diaSemana === 0) ? 0 : (7 - diaSemana);
-            
+            const diaSemana = hoje.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+        
+            let diferencaDias;
+            if (diaSemana === 1) {
+                diferencaDias = -1; // Segunda-feira: apanha o Domingo de ontem
+            } else if (diaSemana === 0) {
+                diferencaDias = 0;  // Domingo: mantém o próprio dia
+            } else {
+                diferencaDias = 7 - diaSemana; // Terça a Sábado: aponta para o próximo Domingo
+            }
+        
             const domingo = new Date(hoje);
-            domingo.setDate(hoje.getDate() + diasAteDomingo);
-
+            domingo.setDate(hoje.getDate() + diferencaDias);
+        
             const dia = String(domingo.getDate()).padStart(2, '0');
             const mes = String(domingo.getMonth() + 1).padStart(2, '0');
             const ano = domingo.getFullYear();
-
+        
             return {
                 formatadoLegivel: `${dia}/${mes}/${ano}`,
                 formatadoFicheiro: `${dia}_${mes}_${ano}`
