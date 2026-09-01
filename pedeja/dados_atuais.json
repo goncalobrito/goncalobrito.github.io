@@ -12,5 +12,12 @@
     "pagou": 29,
     "paguei": 15.8,
     "taxaEntrega": 5.5
+  },
+  {
+    "dia": "Terça-Feira",
+    "local": "munchies",
+    "pagou": 18.6,
+    "paguei": 0,
+    "taxaEntrega": 6.9
   }
 ]
