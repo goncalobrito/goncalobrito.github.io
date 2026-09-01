@@ -5,5 +5,12 @@
     "pagou": 29,
     "paguei": 14.7,
     "taxaEntrega": 8.5
+  },
+  {
+    "dia": "Terça-Feira",
+    "local": "furna",
+    "pagou": 29,
+    "paguei": 15.8,
+    "taxaEntrega": 5.5
   }
 ]
