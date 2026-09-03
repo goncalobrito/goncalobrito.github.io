@@ -47,5 +47,12 @@
     "pagou": 16.45,
     "paguei": 10.5,
     "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "Baixa",
+    "pagou": 30.24,
+    "paguei": 24,
+    "taxaEntrega": 2.8
   }
 ]
