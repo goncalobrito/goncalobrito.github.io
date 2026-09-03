@@ -19,5 +19,12 @@
     "pagou": 18.6,
     "paguei": 10.4,
     "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "loja conveniencia",
+    "pagou": 0,
+    "paguei": 5.8,
+    "taxaEntrega": 5.5
   }
 ]
