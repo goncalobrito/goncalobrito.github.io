@@ -40,5 +40,12 @@
     "pagou": 0,
     "paguei": 10.5,
     "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "Divinal",
+    "pagou": 16.45,
+    "paguei": 10.5,
+    "taxaEntrega": 2.8
   }
 ]
