@@ -61,5 +61,12 @@
     "pagou": 33.3,
     "paguei": 23.15,
     "taxaEntrega": 5.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "Fu hao",
+    "pagou": 19.2,
+    "paguei": 13.3,
+    "taxaEntrega": 2.8
   }
 ]
