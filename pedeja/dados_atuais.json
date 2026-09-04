@@ -89,5 +89,12 @@
     "pagou": 0,
     "paguei": 24,
     "taxaEntrega": 0
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "mc",
+    "pagou": 0,
+    "paguei": 23.15,
+    "taxaEntrega": 0
   }
 ]
