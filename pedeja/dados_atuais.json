@@ -96,5 +96,12 @@
     "pagou": 0,
     "paguei": 23.15,
     "taxaEntrega": 0
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "fu hao",
+    "pagou": 0,
+    "paguei": 13.3,
+    "taxaEntrega": 0
   }
 ]
