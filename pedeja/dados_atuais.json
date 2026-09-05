@@ -110,5 +110,12 @@
     "pagou": 28.7,
     "paguei": 17.4,
     "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Sábado",
+    "local": "Real taberna",
+    "pagou": 0,
+    "paguei": 19.92,
+    "taxaEntrega": 0
   }
 ]
