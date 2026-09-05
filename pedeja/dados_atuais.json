@@ -117,5 +117,12 @@
     "pagou": 0,
     "paguei": 19.92,
     "taxaEntrega": 0
+  },
+  {
+    "dia": "Sábado",
+    "local": "Munchies",
+    "pagou": 0,
+    "paguei": 18.8,
+    "taxaEntrega": 0
   }
 ]
