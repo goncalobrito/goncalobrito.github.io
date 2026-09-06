@@ -1,93 +1,135 @@
 [
   {
     "dia": "Terça-Feira",
-    "local": "BK",
-    "pagou": 58.7,
-    "paguei": 44.46,
+    "local": "asia wok",
+    "pagou": 29,
+    "paguei": 14.7,
+    "taxaEntrega": 8.5
+  },
+  {
+    "dia": "Terça-Feira",
+    "local": "furna",
+    "pagou": 29,
+    "paguei": 15.8,
     "taxaEntrega": 5.5
   },
   {
-    "dia": "Quarta-Feira",
-    "local": "Real Taberna",
-    "pagou": 43.2,
-    "paguei": 31.89,
+    "dia": "Terça-Feira",
+    "local": "munchies",
+    "pagou": 18.6,
+    "paguei": 10.4,
     "taxaEntrega": 6.9
   },
   {
-    "dia": "Quinta-Feira",
-    "local": "bom gosto",
-    "pagou": 29.7,
-    "paguei": 20.85,
-    "taxaEntrega": 2.8
-  },
-  {
-    "dia": "Quinta-Feira",
-    "local": "bom gosto",
-    "pagou": 15.7,
-    "paguei": 11.55,
-    "taxaEntrega": 3.9
-  },
-  {
-    "dia": "Quinta-Feira",
-    "local": "ao barrote",
-    "pagou": 46.2,
-    "paguei": 34.85,
-    "taxaEntrega": 3.9
-  },
-  {
     "dia": "Sexta-Feira",
     "local": "bom gosto",
-    "pagou": 26.9,
-    "paguei": 18.85,
-    "taxaEntrega": 5.5
-  },
-  {
-    "dia": "Sexta-Feira",
-    "local": "Divinal",
-    "pagou": 24.9,
-    "paguei": 17,
+    "pagou": 26.7,
+    "paguei": 19.45,
     "taxaEntrega": 2.8
   },
   {
     "dia": "Sexta-Feira",
-    "local": "prego a fundo",
-    "pagou": 28.06,
-    "paguei": 18.05,
-    "taxaEntrega": 3.9
+    "local": "furna",
+    "pagou": 25.2,
+    "paguei": 15.8,
+    "taxaEntrega": 2.8
   },
   {
     "dia": "Sexta-Feira",
-    "local": "chuva",
-    "pagou": 20.5,
-    "paguei": 10.3,
+    "local": "munchies",
+    "pagou": 56,
+    "paguei": 38.5,
+    "taxaEntrega": 6.9
+  },
+  {
+    "dia": "Sexta-Feira",
+    "local": "Mc",
+    "pagou": 10.3,
+    "paguei": 3.9,
     "taxaEntrega": 5.8
   },
   {
     "dia": "Sexta-Feira",
-    "local": "MC",
-    "pagou": 19.1,
-    "paguei": 13.4,
-    "taxaEntrega": 2.8
+    "local": "Mc",
+    "pagou": 38.1,
+    "paguei": 24.65,
+    "taxaEntrega": 5.8
   },
   {
     "dia": "Sexta-Feira",
+    "local": "Mc",
+    "pagou": 54.25,
+    "paguei": 36.2,
+    "taxaEntrega": 8.5
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "conveniencia",
+    "pagou": 12.1,
+    "paguei": 5.8,
+    "taxaEntrega": 5.5
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "bom gosto",
+    "pagou": 29.8,
+    "paguei": 19.75,
+    "taxaEntrega": 5.5
+  },
+  {
+    "dia": "Quinta-Feira",
     "local": "Divinal",
-    "pagou": 51.1,
-    "paguei": 34,
+    "pagou": 16.45,
+    "paguei": 10.5,
+    "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "baixa",
+    "pagou": 30.24,
+    "paguei": 24,
+    "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "mc",
+    "pagou": 33.3,
+    "paguei": 23.15,
+    "taxaEntrega": 5.8
+  },
+  {
+    "dia": "Quinta-Feira",
+    "local": "fu hao",
+    "pagou": 19.2,
+    "paguei": 13.3,
+    "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Sábado",
+    "local": "Mc",
+    "pagou": 28.7,
+    "paguei": 17.4,
     "taxaEntrega": 6.9
   },
   {
     "dia": "Sábado",
-    "local": "bel piato",
-    "pagou": 38,
-    "paguei": 25.2,
-    "taxaEntrega": 3.9
+    "local": "Real taberna",
+    "pagou": 27.85,
+    "paguei": 19.92,
+    "taxaEntrega": 5.5
   },
   {
     "dia": "Sábado",
-    "local": "chuva",
-    "pagou": 14.9,
-    "paguei": 7.8,
-    "taxaEntrega": 3.9
+    "local": "Munchies",
+    "pagou": 23.4,
+    "paguei": 18.8,
+    "taxaEntrega": 2.8
+  },
+  {
+    "dia": "Sábado",
+    "local": "Mc",
+    "pagou": 28.25,
+    "paguei": 21.8,
+    "taxaEntrega": 2.8
   }
 ]
