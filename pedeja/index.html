@@ -10,22 +10,23 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Entregas">
-    <meta name="theme-color" content="#0b1120">
+    <meta name="theme-color" content="#080d1a">
 
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Gestor%20de%20Entregas%22%2C%22short_name%22%3A%22Entregas%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b1120%22%2C%22theme_color%22%3A%22%230b1120%22%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Gestor%20de%20Entregas%22%2C%22short_name%22%3A%22Entregas%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23080d1a%22%2C%22theme_color%22%3A%22%23080d1a%22%7D">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --bg-color: #0b1120;
-            --card-bg: #151f32;
+            --bg-color: #080d1a;
+            --card-bg: rgba(22, 31, 50, 0.72);
             --card-border: rgba(255, 255, 255, 0.08);
             --accent-orange: #f59e0b;
             --accent-pink: #ec4899;
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-danger: #ef4444;
+            --accent-emerald: #10b981;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -34,7 +35,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
@@ -43,50 +44,52 @@
 
         body {
             background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.12), transparent 38%),
+                radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.1), transparent 42%);
+            background-attachment: fixed;
             color: var(--text-main);
-            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
             min-height: 100vh;
         }
 
-        /* ECRÃ DE LOGIN OBRIGATÓRIO */
         #authContainer {
             position: fixed;
             inset: 0;
-            background: var(--bg-color);
+            background: rgba(8, 13, 26, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
             z-index: 99999;
         }
         .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background: rgba(26, 36, 58, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 24px;
-            padding: 28px 22px;
+            padding: 26px 20px;
             width: 100%;
-            max-width: 380px;
+            max-width: 360px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            gap: 14px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
         }
-        .auth-card h2 { text-align: center; font-size: 1.4rem; font-weight: 800; }
-        .auth-card p { text-align: center; color: var(--text-muted); font-size: 0.85rem; }
-        .auth-toggle { text-align: center; font-size: 0.85rem; color: var(--accent-blue); cursor: pointer; margin-top: 4px; font-weight: 600; }
+        .auth-card h2 { text-align: center; font-size: 1.35rem; font-weight: 800; }
+        .auth-card p { text-align: center; color: var(--text-muted); font-size: 0.82rem; }
+        .auth-toggle { text-align: center; font-size: 0.82rem; color: #60a5fa; cursor: pointer; font-weight: 600; }
 
-        /* APLICAÇÃO */
         #appArea { display: none; }
 
         .navbar {
-            background: rgba(15, 23, 42, 0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(11, 18, 33, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
-            padding: 12px 16px;
-            padding-top: calc(12px + env(safe-area-inset-top));
+            padding: 10px 14px;
+            padding-top: calc(10px + env(safe-area-inset-top));
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -94,110 +97,125 @@
             top: 0;
             z-index: 50;
         }
-        .navbar-brand { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: -0.3px; }
-        .navbar-actions { display: flex; gap: 8px; align-items: center; }
+        .navbar-brand { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px; }
+        .navbar-actions { display: flex; gap: 6px; align-items: center; }
 
         .nav-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             color: #f8fafc;
             border: 1px solid var(--card-border);
-            padding: 8px 12px;
-            border-radius: 12px;
+            padding: 6px 10px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.82rem;
+            font-size: 0.76rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            transition: transform 0.1s, opacity 0.1s;
+            gap: 4px;
+            transition: all 0.12s ease;
         }
-        .nav-btn:active { transform: scale(0.94); opacity: 0.8; }
-        .nav-btn-history { border-color: rgba(139, 92, 246, 0.3); color: #c4b5fd; background: rgba(139, 92, 246, 0.12); }
-        .nav-btn-reset { border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.12); color: #fca5a5; }
-        .nav-btn-logout { border-color: rgba(220, 38, 38, 0.35); background: rgba(220, 38, 38, 0.18); color: #f87171; }
+        .nav-btn:active { transform: scale(0.92); }
+        .nav-btn-history { border-color: rgba(139, 92, 246, 0.35); color: #c4b5fd; background: rgba(139, 92, 246, 0.14); }
+        .nav-btn-admin { border-color: rgba(245, 158, 11, 0.35); color: #fbbf24; background: rgba(245, 158, 11, 0.15); display: none; }
+        .nav-btn-reset { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.14); color: #fca5a5; }
+        .nav-btn-logout { border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.2); color: #f87171; }
 
-        .container { max-width: 1200px; margin: 16px auto 0 auto; padding: 0 14px; }
+        .container { max-width: 1200px; margin: 10px auto 0 auto; padding: 0 10px; }
 
-        /* BALÕES DE TOTAIS SUPERIORES */
+        /* TOTAIS SUPERIORES */
         .resumo-global {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .box-global {
-            padding: 12px 8px;
-            border-radius: 16px;
+            padding: 10px 6px;
+            border-radius: 14px;
             text-align: center;
             font-weight: 800;
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 0.4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-        .box-lucro { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
-        .box-adar { background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3); color: #f472b6; }
-        .box-total { background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; }
-        .box-global span { display: block; font-size: 1.18rem; margin-top: 4px; font-weight: 900; letter-spacing: -0.5px; }
+        .box-lucro { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.28); color: #fbbf24; }
+        .box-adar { background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.28); color: #f472b6; }
+        .box-total { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.28); color: #60a5fa; }
+        .box-global span { display: block; font-size: 1.05rem; margin-top: 2px; font-weight: 900; letter-spacing: -0.4px; }
         .valor-adar { color: #f472b6; }
         .valor-devem { color: #c084fc; }
 
-        /* GRID DE CARDS */
-        .cards-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        /* CARDS DE DIAS */
+        .cards-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
         @media (min-width: 600px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 900px) { .cards-grid { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); } }
+        @media (min-width: 900px) { .cards-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } }
 
         .day-card {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            gap: 8px;
         }
+        .day-card.has-pedidos { border-color: rgba(16, 185, 129, 0.25); }
 
         .day-header { display: flex; justify-content: space-between; align-items: center; }
-        .day-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.2px; }
-        .count-tag { font-size: 0.72rem; font-weight: 700; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--card-border); padding: 3px 9px; border-radius: 20px; color: var(--text-muted); }
+        .day-title { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.2px; }
+        .count-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--card-border);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
+        .count-tag.active { color: #34d399; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); }
 
         .day-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            background: rgba(11, 17, 32, 0.6);
-            padding: 10px 6px;
-            border-radius: 14px;
+            background: rgba(6, 11, 22, 0.6);
+            padding: 6px 4px;
+            border-radius: 12px;
             text-align: center;
         }
-        .stat-item small { display: block; font-size: 0.68rem; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; font-weight: 700; }
-        .stat-item b { font-size: 1rem; font-weight: 800; }
+        .stat-item small { display: block; font-size: 0.62rem; color: var(--text-muted); margin-bottom: 1px; text-transform: uppercase; font-weight: 700; }
+        .stat-item b { font-size: 0.88rem; font-weight: 800; }
 
-        .day-actions { display: flex; gap: 8px; }
+        .day-actions { display: flex; gap: 6px; }
         .btn-action {
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
             border: 1px solid var(--card-border);
-            border-radius: 14px;
-            height: 44px;
+            border-radius: 10px;
+            height: 36px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.86rem;
             font-weight: 700;
-            transition: transform 0.1s;
+            transition: all 0.12s ease;
         }
-        .btn-action:active { transform: scale(0.95); }
-        .btn-plus { flex: 3; background: #2563eb; border: none; }
-        .btn-eye { flex: 1; font-size: 1.25rem; }
+        .btn-action:active { transform: scale(0.94); }
+        .btn-plus { flex: 3; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; }
+        .btn-eye { flex: 1; font-size: 1.1rem; }
 
-        /* MODAIS ESTILO GAVETA MOBILE (BOTTOM SHEET) */
+        /* MODAIS BOTTOM SHEET */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: none;
             justify-content: center;
             align-items: flex-end;
@@ -207,87 +225,188 @@
         .modal-overlay.active { display: flex; }
 
         .modal-card {
-            background: #182234;
-            border: 1px solid var(--card-border);
-            border-radius: 26px 26px 0 0;
+            background: #141c2e;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px 24px 0 0;
             width: 100%;
             max-width: 580px;
-            max-height: 88vh;
+            max-height: 92vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             padding-bottom: env(safe-area-inset-bottom);
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
-            animation: slideSheet 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.6);
+            animation: slideUpModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        @keyframes slideSheet {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+        .modal-drag-handle {
+            width: 34px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 8px auto 2px auto;
         }
         @media (min-width: 600px) {
-            .modal-card { border-radius: 24px; padding-bottom: 0; }
+            .modal-card { border-radius: 22px; padding-bottom: 0; }
+            .modal-drag-handle { display: none; }
         }
 
         .modal-header {
-            padding: 16px 20px;
-            background: rgba(11, 17, 32, 0.5);
+            padding: 10px 16px 12px 16px;
             border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .modal-header h3 { font-size: 1.15rem; font-weight: 800; }
+        .modal-header h3 { font-size: 1.05rem; font-weight: 800; }
         .btn-modal-close {
             background: rgba(255, 255, 255, 0.08);
             color: #fff;
             border: none;
-            width: 34px;
-            height: 34px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .modal-body { padding: 18px; overflow-y: auto; }
-        .form-group { display: flex; flex-direction: column; gap: 14px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; display: block; text-transform: uppercase; }
+        .modal-body { padding: 12px 14px; overflow-y: auto; }
+        .form-group { display: flex; flex-direction: column; gap: 10px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; display: block; text-transform: uppercase; }
         input {
             width: 100%;
-            background: #0b1120;
+            background: rgba(8, 13, 26, 0.85);
             border: 1px solid var(--card-border);
             color: #fff;
-            padding: 13px 14px;
-            border-radius: 14px;
-            font-size: 1rem;
+            padding: 11px 13px;
+            border-radius: 12px;
+            font-size: 0.95rem;
             outline: none;
         }
         input:focus { border-color: var(--accent-blue); }
 
         .btn-submit {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #fff;
             border: none;
-            padding: 15px;
+            padding: 13px;
             width: 100%;
-            border-radius: 14px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 800;
-            font-size: 1rem;
-            transition: transform 0.1s;
+            font-size: 0.95rem;
         }
-        .btn-submit:active { transform: scale(0.97); }
+        .btn-submit:active { transform: scale(0.96); }
 
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 380px; font-size: 0.85rem; }
-        th, td { padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--card-border); }
-        th { color: var(--text-muted); background: rgba(0, 0, 0, 0.2); font-size: 0.72rem; text-transform: uppercase; font-weight: 800; }
-        .btn-tbl { padding: 8px 12px; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; }
-        .btn-tbl-edit { background: #eab308; color: #000; }
-        .btn-tbl-del { background: #ef4444; color: #fff; margin-left: 4px; }
+        /* LISTA ULTRA-COMPACTA */
+        .dense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dense-row {
+            background: rgba(8, 13, 26, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 38px;
+            transition: background 0.1s ease;
+        }
+        .dense-row:active { background: rgba(22, 31, 50, 0.9); }
+
+        .dense-left {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            min-width: 0;
+            flex: 1;
+        }
+        .dense-name {
+            font-size: 0.84rem;
+            font-weight: 750;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 115px;
+        }
+        .dense-values {
+            font-size: 0.68rem;
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .val-pagou { color: #34d399; }
+        .val-paguei { color: #f87171; }
+        .val-sep { color: rgba(255, 255, 255, 0.2); font-size: 0.6rem; }
+
+        .dense-day {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .dense-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .dense-taxa {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.12);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+        .dense-adar {
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+        .dense-adar.valor-adar {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.25);
+        }
+        .dense-adar.valor-devem {
+            background: rgba(192, 132, 252, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+
+        .dense-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .dense-btn:active { background: rgba(255, 255, 255, 0.1); }
+        .dense-btn-del { color: #f87171; }
+
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -317,6 +436,7 @@
         <nav class="navbar">
             <div class="navbar-brand">🛵 <span id="navTitulo">Entregas</span></div>
             <div class="navbar-actions">
+                <button class="nav-btn nav-btn-admin" id="btnNavAdmin" onclick="abrirModalAdmin()">👑 Admin</button>
                 <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Semanas</button>
                 <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹</button>
                 <button class="nav-btn nav-btn-logout" onclick="terminarSessao()">🚪 Sair</button>
@@ -337,6 +457,7 @@
     <!-- MODAL FORMULÁRIO -->
     <div class="modal-overlay" id="modalFormOverlay" onclick="fecharModalFora(event, 'modalFormOverlay')">
         <div class="modal-card">
+            <div class="modal-drag-handle"></div>
             <div class="modal-header">
                 <h3 id="modalFormTitulo">➕ Registar Entrega</h3>
                 <button class="btn-modal-close" onclick="fecharModalForm()">✕</button>
@@ -370,6 +491,7 @@
     <!-- MODAL LISTA DO DIA -->
     <div class="modal-overlay" id="modalListOverlay" onclick="fecharModalFora(event, 'modalListOverlay')">
         <div class="modal-card">
+            <div class="modal-drag-handle"></div>
             <div class="modal-header">
                 <h3 id="modalListTitulo">📦 Pedidos</h3>
                 <button class="btn-modal-close" onclick="fecharModalList()">✕</button>
@@ -381,12 +503,30 @@
     <!-- MODAL HISTÓRICO DE SEMANAS -->
     <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
         <div class="modal-card">
+            <div class="modal-drag-handle"></div>
             <div class="modal-header">
                 <h3>📜 Semanas Anteriores</h3>
                 <button class="btn-modal-close" onclick="document.getElementById('modalHistoryOverlay').classList.remove('active')">✕</button>
             </div>
             <div class="modal-body" id="modalHistoryConteudo">
-                <p style="text-align:center; color: var(--text-muted);">A carregar...</p>
+                <p style="text-align:center; color: var(--text-muted); padding: 20px;">A carregar...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN -->
+    <div class="modal-overlay" id="modalAdminOverlay" onclick="fecharModalFora(event, 'modalAdminOverlay')">
+        <div class="modal-card">
+            <div class="modal-drag-handle"></div>
+            <div class="modal-header">
+                <h3>👑 Painel de Estafetas</h3>
+                <button class="btn-modal-close" onclick="document.getElementById('modalAdminOverlay').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="adminAreaGeral">
+                    <p style="text-align:center; color: var(--text-muted); padding: 20px 0;">A carregar contas...</p>
+                </div>
+                <div id="adminAreaDetalhe" style="display:none;"></div>
             </div>
         </div>
     </div>
@@ -395,6 +535,11 @@
         // ================= CONFIGURAÇÃO SUPABASE =================
         const SUPABASE_URL = "https://eaelpqgocmbszfwiexpq.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_U8EVuur6sYVR3e6LeCeKcg_xbwBCIHQ";
+        
+        // 🚨 CONFIGURA AQUI O TEU EMAIL DE ADMIN:
+        const ADMIN_EMAILS = [
+            "britess24s@gmail.com"
+        ];
 
         const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -429,6 +574,11 @@
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appArea').style.display = 'block';
             document.getElementById('navTitulo').innerText = utilizadorAtual.email.split('@')[0];
+
+            // Ativa o botão se o email do utilizador estiver na lista de admins
+            const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === utilizadorAtual.email.toLowerCase());
+            document.getElementById('btnNavAdmin').style.display = isAdmin ? 'inline-flex' : 'none';
+
             await carregarDadosDaNuvem();
         }
 
@@ -531,7 +681,7 @@
             const valorNumerico = parseFloat(valor) || 0;
             const deve = valorNumerico < 0;
             return {
-                texto: deve ? `Devem ${Math.abs(valorNumerico).toFixed(2)}€` : `${valorNumerico.toFixed(2)}€`,
+                texto: deve ? `-${Math.abs(valorNumerico).toFixed(2)}€` : `+${valorNumerico.toFixed(2)}€`,
                 classe: deve ? 'valor-devem' : 'valor-adar'
             };
         }
@@ -551,12 +701,13 @@
                 const filtrados = registos.filter(r => r.dia === dia);
                 const stats = calcularTotais(filtrados);
                 const adarDia = formatarValorAdar(stats.adar);
+                const temPedidos = stats.count > 0;
 
                 grid.innerHTML += `
-                    <div class="day-card">
+                    <div class="day-card ${temPedidos ? 'has-pedidos' : ''}">
                         <div class="day-header">
                             <span class="day-title">${dia}</span>
-                            <span class="count-tag">${stats.count} pedidos</span>
+                            <span class="count-tag ${temPedidos ? 'active' : ''}">${stats.count} pedidos</span>
                         </div>
                         <div class="day-stats">
                             <div class="stat-item"><small>Lucro</small><b style="color: #fbbf24;">${stats.lucro.toFixed(2)}€</b></div>
@@ -626,7 +777,7 @@
             await salvarDados();
         }
 
-        // --- LISTA DO DIA ---
+        // --- LISTA DO DIA EM LINHAS ULTRA-COMPACTAS ---
         function abrirModalList(dia) {
             diaAtivo = dia;
             document.getElementById('modalListTitulo').innerText = `📦 ${dia}`;
@@ -634,36 +785,34 @@
             const container = document.getElementById('modalListConteudo');
 
             if (entregas.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px;">Nenhum pedido registado.</p>`;
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px 0;">Nenhum pedido registado.</p>`;
             } else {
-                let html = `
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr><th>Local</th><th>Pagou</th><th>Paguei</th><th>Taxa</th><th>A Dar</th><th>Ações</th></tr>
-                            </thead>
-                            <tbody>
-                `;
+                let html = `<div class="dense-list">`;
                 entregas.forEach(r => {
                     const indexReal = registos.indexOf(r);
                     const valTaxas = r.pagou - r.paguei;
                     const adarPedido = formatarValorAdar(valTaxas - r.taxaEntrega);
 
                     html += `
-                        <tr>
-                            <td><b>${r.local}</b></td>
-                            <td>${r.pagou.toFixed(2)}€</td>
-                            <td>${r.paguei.toFixed(2)}€</td>
-                            <td>${r.taxaEntrega.toFixed(2)}€</td>
-                            <td><b class="${adarPedido.classe}">${adarPedido.texto}</b></td>
-                            <td>
-                                <button class="btn-tbl btn-tbl-edit" onclick="editarViaModal(${indexReal})">✏️</button>
-                                <button class="btn-tbl btn-tbl-del" onclick="removerRegisto(${indexReal})">🗑️</button>
-                            </td>
-                        </tr>
+                        <div class="dense-row">
+                            <div class="dense-left">
+                                <span class="dense-name">${r.local}</span>
+                                <div class="dense-values">
+                                    <span class="val-pagou">${r.pagou.toFixed(1)}€</span>
+                                    <span class="val-sep">/</span>
+                                    <span class="val-paguei">${r.paguei.toFixed(1)}€</span>
+                                </div>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">+${r.taxaEntrega.toFixed(1)}€</span>
+                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                                <button class="dense-btn" onclick="editarViaModal(${indexReal})">✏️</button>
+                                <button class="dense-btn dense-btn-del" onclick="removerRegisto(${indexReal})">✕</button>
+                            </div>
+                        </div>
                     `;
                 });
-                html += `</tbody></table></div>`;
+                html += `</div>`;
                 container.innerHTML = html;
             }
 
@@ -690,44 +839,46 @@
             }
         }
 
-        // --- HISTÓRICO COM DETALHES E RESTAURO ---
+        // --- HISTÓRICO DAS SEMANAS ---
         async function abrirModalHistorico() {
             const container = document.getElementById('modalHistoryConteudo');
             document.getElementById('modalHistoryOverlay').classList.add('active');
 
             if (!utilizadorAtual) return;
 
-            container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:10px;">A carregar semanas...</p>`;
+            container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar semanas...</p>`;
 
             try {
                 const { data, error } = await sbClient
                     .from('entregas_historico')
                     .select('*')
+                    .eq('user_id', utilizadorAtual.id)
                     .order('criado_em', { ascending: false });
 
                 if (error || !data || data.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:10px;">Ainda não há semanas arquivadas.</p>`;
+                    container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">Ainda não há semanas arquivadas.</p>`;
                     return;
                 }
 
                 historicoCarregado = data;
 
                 container.innerHTML = data.map((item, index) => `
-                    <div style="background:#0b1120; padding:12px; border-radius:14px; margin-bottom:10px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+                    <div style="background:rgba(8, 13, 26, 0.7); padding:10px 12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <b>📅 Semana ${item.semana_fim}</b>
-                            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
-                                Lucro: ${item.resumo.lucro_total} | Pedidos: ${item.resumo.total_pedidos}
+                            <b style="font-size: 0.9rem;">📅 Semana ${item.semana_fim}</b>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                                Lucro: <span style="color:#fbbf24; font-weight:700;">${item.resumo.lucro_total}</span> | Pedidos: ${item.resumo.total_pedidos}
                             </div>
                         </div>
                         <button class="nav-btn nav-btn-history" onclick="abrirDetalheSemana(${index})">👁 Ver</button>
                     </div>
                 `).join('');
             } catch (e) {
-                container.innerHTML = `<p style="text-align:center; color:var(--accent-danger);">Erro ao carregar histórico.</p>`;
+                container.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px;">Erro ao carregar histórico.</p>`;
             }
         }
 
+        // --- DETALHE DA SEMANA ARQUIVADA (15+ PEDIDOS COMPACTOS) ---
         function abrirDetalheSemana(index) {
             const semana = historicoCarregado[index];
             const container = document.getElementById('modalHistoryConteudo');
@@ -736,41 +887,45 @@
             const adar = formatarValorAdar(totais.adar);
 
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <button class="nav-btn" onclick="abrirModalHistorico()">⬅️ Voltar</button>
-                    <button class="nav-btn" style="background:#2563eb; color:#fff;" onclick="restaurarSemana(${index})">🔄 Restaurar</button>
+                    <button class="nav-btn" style="background:#2563eb; color:#fff; border:none;" onclick="restaurarSemana(${index})">🔄 Restaurar</button>
                 </div>
 
-                <div style="background:#0b1120; padding:10px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:12px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.8rem;">
+                <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
                     <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
                     <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
                     <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
                 </div>
 
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr><th>Dia</th><th>Local</th><th>Pagou</th><th>Paguei</th><th>Taxa</th><th>A Dar</th></tr>
-                        </thead>
-                        <tbody>
+                <div class="dense-list">
             `;
 
             lista.forEach(r => {
                 const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
                 const adarPedido = formatarValorAdar(valTaxas - (parseFloat(r.taxaEntrega) || 0));
+                const diaCurto = r.dia.split('-')[0];
+
                 html += `
-                    <tr>
-                        <td><b>${r.dia}</b></td>
-                        <td>${r.local}</td>
-                        <td>${(parseFloat(r.pagou) || 0).toFixed(2)}€</td>
-                        <td>${(parseFloat(r.paguei) || 0).toFixed(2)}€</td>
-                        <td>${(parseFloat(r.taxaEntrega) || 0).toFixed(2)}€</td>
-                        <td class="${adarPedido.classe}">${adarPedido.texto}</td>
-                    </tr>
+                    <div class="dense-row">
+                        <div class="dense-left">
+                            <span class="dense-name">${r.local}</span>
+                            <div class="dense-values">
+                                <span class="val-pagou">${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                <span class="val-sep">/</span>
+                                <span class="val-paguei">${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
+                            </div>
+                            <span class="dense-day">· ${diaCurto}</span>
+                        </div>
+                        <div class="dense-right">
+                            <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                        </div>
+                    </div>
                 `;
             });
 
-            html += `</tbody></table></div>`;
+            html += `</div>`;
             container.innerHTML = html;
         }
 
@@ -804,6 +959,120 @@
             renderizar();
             await salvarDados();
             alert("Semana limpa e arquivada!");
+        }
+
+        // ================= FUNÇÕES MODO ADMIN =================
+        let adminUsersCache = [];
+
+        async function abrirModalAdmin() {
+            document.getElementById('modalAdminOverlay').classList.add('active');
+            document.getElementById('adminAreaDetalhe').style.display = 'none';
+            const areaGeral = document.getElementById('adminAreaGeral');
+            areaGeral.style.display = 'block';
+            areaGeral.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar contas...</p>`;
+
+            try {
+                // Consulta todas as contas ativas gravadas no Supabase
+                const { data: ativas, error: errAtivas } = await sbClient
+                    .from('entregas_ativas')
+                    .select('user_id, registos, atualizado_em');
+
+                if (errAtivas) throw errAtivas;
+
+                if (!ativas || ativas.length === 0) {
+                    areaGeral.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">Nenhum registo encontrado.</p>`;
+                    return;
+                }
+
+                adminUsersCache = ativas;
+
+                let html = `<div class="dense-list">`;
+                ativas.forEach((item, idx) => {
+                    const totalPed = Array.isArray(item.registos) ? item.registos.length : 0;
+                    const totais = calcularTotais(item.registos || []);
+                    const userIdCurto = item.user_id.substring(0, 8);
+
+                    html += `
+                        <div class="dense-row" style="height:44px;">
+                            <div class="dense-left">
+                                <span class="dense-name">👤 ID: ${userIdCurto}</span>
+                                <span class="dense-day">${totalPed} pedidos ativos</span>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">${totais.lucro.toFixed(1)}€</span>
+                                <button class="nav-btn nav-btn-admin" style="display:inline-flex; padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                areaGeral.innerHTML = html;
+            } catch (e) {
+                areaGeral.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px 0;">Erro ao consultar estafetas. Verificaste as policies SQL de Admin?</p>`;
+            }
+        }
+
+        function verEstafetaAdmin(idx) {
+            const estafeta = adminUsersCache[idx];
+            const areaGeral = document.getElementById('adminAreaGeral');
+            const areaDetalhe = document.getElementById('adminAreaDetalhe');
+            const lista = estafeta.registos || [];
+            const totais = calcularTotais(lista);
+            const adar = formatarValorAdar(totais.adar);
+
+            areaGeral.style.display = 'none';
+            areaDetalhe.style.display = 'block';
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <button class="nav-btn" onclick="voltarListaAdmin()">⬅️ Voltar</button>
+                    <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ID: ${estafeta.user_id.substring(0, 8)}</span>
+                </div>
+
+                <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                    <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+                </div>
+
+                <div class="dense-list">
+            `;
+
+            if (lista.length === 0) {
+                html += `<p style="text-align:center; color:var(--text-muted); padding:15px 0;">Sem pedidos ativos nesta conta.</p>`;
+            } else {
+                lista.forEach(r => {
+                    const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                    const adarPedido = formatarValorAdar(valTaxas - (parseFloat(r.taxaEntrega) || 0));
+                    const diaCurto = r.dia.split('-')[0];
+
+                    html += `
+                        <div class="dense-row">
+                            <div class="dense-left">
+                                <span class="dense-name">${r.local}</span>
+                                <div class="dense-values">
+                                    <span class="val-pagou">${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                    <span class="val-sep">/</span>
+                                    <span class="val-paguei">${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
+                                </div>
+                                <span class="dense-day">· ${diaCurto}</span>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            areaDetalhe.innerHTML = html;
+        }
+
+        function voltarListaAdmin() {
+            document.getElementById('adminAreaDetalhe').style.display = 'none';
+            document.getElementById('adminAreaGeral').style.display = 'block';
         }
 
         function fecharModalFora(e, id) {
