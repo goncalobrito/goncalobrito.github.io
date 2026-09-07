@@ -83,13 +83,14 @@
 
         #appArea { display: none; }
 
+        /* NAVBAR RESPONSIVA */
         .navbar {
             background: rgba(11, 18, 33, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
-            padding: 10px 14px;
-            padding-top: calc(10px + env(safe-area-inset-top));
+            padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top));
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -97,8 +98,14 @@
             top: 0;
             z-index: 50;
         }
-        .navbar-brand { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px; }
-        .navbar-actions { display: flex; gap: 6px; align-items: center; }
+        .navbar-brand { font-size: 1.12rem; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px; }
+
+        /* BOTÕES NORMAIS (PC / TABLET) */
+        .navbar-actions-desktop {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
 
         .nav-btn {
             background: rgba(255, 255, 255, 0.06);
@@ -119,6 +126,78 @@
         .nav-btn-admin { border-color: rgba(245, 158, 11, 0.35); color: #fbbf24; background: rgba(245, 158, 11, 0.15); display: none; }
         .nav-btn-reset { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.14); color: #fca5a5; }
         .nav-btn-logout { border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.2); color: #f87171; }
+
+        /* HAMBURGER (ESCONDIDO POR DEFEITO) */
+        .nav-btn-menu {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--card-border);
+            color: #f8fafc;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .nav-btn-menu:active { transform: scale(0.92); }
+
+        /* REGRA PARA MENOS DE 400PX: ATIVA O HAMBURGER E ESCONDE OS BOTÕES EXTENSOS */
+        @media (max-width: 550px) {
+            .navbar-actions-desktop {
+                display: none !important;
+            }
+            .nav-btn-menu {
+                display: flex !important;
+            }
+        }
+
+        /* MENU BOTTOM SHEET (HAMBURGER / 3 PONTINHOS) */
+        .menu-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 2000;
+        }
+        .menu-sheet-overlay.active { display: flex; }
+        .menu-sheet {
+            background: #141c2e;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+            animation: slideUpModal 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .menu-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.12s ease;
+        }
+        .menu-item:active { background: rgba(255, 255, 255, 0.12); }
+        .menu-item-admin { color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.12); display: none; }
+        .menu-item-danger { color: #f87171; border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.12); }
 
         .container { max-width: 1200px; margin: 10px auto 0 auto; padding: 0 10px; }
 
@@ -435,12 +514,17 @@
     <div id="appArea">
         <nav class="navbar">
             <div class="navbar-brand">🛵 <span id="navTitulo">Entregas</span></div>
-            <div class="navbar-actions">
+            
+            <!-- Barra de Ações Completa para PC / Tablets (> 400px) -->
+            <div class="navbar-actions-desktop">
                 <button class="nav-btn nav-btn-admin" id="btnNavAdmin" onclick="abrirModalAdmin()">👑 Admin</button>
                 <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Semanas</button>
                 <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹</button>
                 <button class="nav-btn nav-btn-logout" onclick="terminarSessao()">🚪 Sair</button>
             </div>
+
+            <!-- Botão Hamburger Só para Mobile Pequeno (<= 400px) -->
+            <button class="nav-btn-menu" onclick="abrirMenuAcoes()">⋮</button>
         </nav>
 
         <div class="container">
@@ -451,6 +535,25 @@
             </div>
 
             <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+    </div>
+
+    <!-- MENU DE OPÇÕES (HAMBURGER / 3 PONTINHOS EM MOBILE <= 400px) -->
+    <div class="menu-sheet-overlay" id="menuSheetOverlay" onclick="fecharMenuAcoesFora(event)">
+        <div class="menu-sheet">
+            <div class="modal-drag-handle"></div>
+            <div class="menu-item menu-item-admin" id="btnMenuAdmin" onclick="fecharMenuAcoes(); abrirModalAdmin();">
+                👑 <span>Painel de Estafetas (Admin)</span>
+            </div>
+            <div class="menu-item" onclick="fecharMenuAcoes(); abrirModalHistorico();">
+                📜 <span>Semanas Arquivadas</span>
+            </div>
+            <div class="menu-item" onclick="fecharMenuAcoes(); fecharSemana();">
+                🧹 <span>Fechar e Limpar Semana</span>
+            </div>
+            <div class="menu-item menu-item-danger" onclick="fecharMenuAcoes(); terminarSessao();">
+                🚪 <span>Terminar Sessão</span>
+            </div>
         </div>
     </div>
 
@@ -536,7 +639,7 @@
         const SUPABASE_URL = "https://eaelpqgocmbszfwiexpq.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_U8EVuur6sYVR3e6LeCeKcg_xbwBCIHQ";
         
-        // 🚨 CONFIGURA AQUI O TEU EMAIL DE ADMIN:
+        // Configura aqui o teu email de admin:
         const ADMIN_EMAILS = [
             "britess24s@gmail.com"
         ];
@@ -575,9 +678,10 @@
             document.getElementById('appArea').style.display = 'block';
             document.getElementById('navTitulo').innerText = utilizadorAtual.email.split('@')[0];
 
-            // Ativa o botão se o email do utilizador estiver na lista de admins
+            // Mostra o botão Admin (no desktop e no menu mobile) se for admin
             const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === utilizadorAtual.email.toLowerCase());
             document.getElementById('btnNavAdmin').style.display = isAdmin ? 'inline-flex' : 'none';
+            document.getElementById('btnMenuAdmin').style.display = isAdmin ? 'flex' : 'none';
 
             await carregarDadosDaNuvem();
         }
@@ -628,6 +732,19 @@
             if (!confirm("Terminar sessão?")) return;
             await sbClient.auth.signOut();
             fecharApp();
+        }
+
+        // --- CONTROLO DO MENU GAVETA ---
+        function abrirMenuAcoes() {
+            document.getElementById('menuSheetOverlay').classList.add('active');
+        }
+
+        function fecharMenuAcoes() {
+            document.getElementById('menuSheetOverlay').classList.remove('active');
+        }
+
+        function fecharMenuAcoesFora(e) {
+            if (e.target.id === 'menuSheetOverlay') fecharMenuAcoes();
         }
 
         // --- PERSISTÊNCIA AUTOMÁTICA NA NUVEM ---
@@ -777,7 +894,7 @@
             await salvarDados();
         }
 
-        // --- LISTA DO DIA EM LINHAS ULTRA-COMPACTAS ---
+        // --- LISTA DO DIA ---
         function abrirModalList(dia) {
             diaAtivo = dia;
             document.getElementById('modalListTitulo').innerText = `📦 ${dia}`;
@@ -839,7 +956,7 @@
             }
         }
 
-        // --- HISTÓRICO DAS SEMANAS ---
+        // --- HISTÓRICO ---
         async function abrirModalHistorico() {
             const container = document.getElementById('modalHistoryConteudo');
             document.getElementById('modalHistoryOverlay').classList.add('active');
@@ -878,7 +995,6 @@
             }
         }
 
-        // --- DETALHE DA SEMANA ARQUIVADA (15+ PEDIDOS COMPACTOS) ---
         function abrirDetalheSemana(index) {
             const semana = historicoCarregado[index];
             const container = document.getElementById('modalHistoryConteudo');
@@ -961,7 +1077,7 @@
             alert("Semana limpa e arquivada!");
         }
 
-        // ================= FUNÇÕES MODO ADMIN =================
+        // --- MODO ADMIN ---
         let adminUsersCache = [];
 
         async function abrirModalAdmin() {
@@ -972,7 +1088,6 @@
             areaGeral.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar contas...</p>`;
 
             try {
-                // Consulta todas as contas ativas gravadas no Supabase
                 const { data: ativas, error: errAtivas } = await sbClient
                     .from('entregas_ativas')
                     .select('user_id, registos, atualizado_em');
@@ -996,11 +1111,11 @@
                         <div class="dense-row" style="height:44px;">
                             <div class="dense-left">
                                 <span class="dense-name">👤 ID: ${userIdCurto}</span>
-                                <span class="dense-day">${totalPed} pedidos ativos</span>
+                                <span class="dense-day">${totalPed} pedidos</span>
                             </div>
                             <div class="dense-right">
                                 <span class="dense-taxa">${totais.lucro.toFixed(1)}€</span>
-                                <button class="nav-btn nav-btn-admin" style="display:inline-flex; padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
+                                <button class="nav-btn" style="border-color:rgba(245,158,11,0.4); color:#fbbf24; background:rgba(245,158,11,0.15); padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
                             </div>
                         </div>
                     `;
@@ -1008,7 +1123,10 @@
                 html += `</div>`;
                 areaGeral.innerHTML = html;
             } catch (e) {
-                areaGeral.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px 0;">Erro ao consultar estafetas. Verificaste as policies SQL de Admin?</p>`;
+                console.error("Erro completo:", e);
+                areaGeral.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px 0; font-size:0.8rem;">
+                    Erro: ${e.message || JSON.stringify(e)}
+                </p>`;
             }
         }
 
