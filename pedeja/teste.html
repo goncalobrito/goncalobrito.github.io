@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Entregas Semanal</title>
+
+    <!-- METAS PWA MOBILE NATIVO -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Entregas">
+    <meta name="theme-color" content="#080d1a">
+
+    <link rel="manifest"
+        href="data:application/manifest+json,%7B%22name%22%3A%22Gestor%20de%20Entregas%22%2C%22short_name%22%3A%22Entregas%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23080d1a%22%2C%22theme_color%22%3A%22%23080d1a%22%7D">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* TEMA 1: PADRÃO ORIGINAL (AZUL / ROXO / ESCURO) */
+        :root {
+            --bg-color: #080d1a;
+            --bg-grad-1: rgba(59, 130, 246, 0.12);
+            --bg-grad-2: rgba(139, 92, 246, 0.1);
+            --card-bg: rgba(22, 31, 50, 0.72);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --surface-sheet: #141c2e;
+            --surface-stats: rgba(6, 11, 22, 0.6);
+            --input-bg: rgba(8, 13, 26, 0.85);
+            --dense-bg: rgba(8, 13, 26, 0.65);
+            --dense-active: rgba(22, 31, 50, 0.9);
+
+            --accent-primary: #3b82f6;
+            --btn-plus-bg: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --btn-plus-shadow: none;
+
+            --box-lucro-bg: rgba(245, 158, 11, 0.1);
+            --box-lucro-border: rgba(245, 158, 11, 0.28);
+            --box-lucro-color: #fbbf24;
+
+            --box-adar-bg: rgba(236, 72, 153, 0.1);
+            --box-adar-border: rgba(236, 72, 153, 0.28);
+            --box-adar-color: #f472b6;
+
+            --box-total-bg: rgba(59, 130, 246, 0.1);
+            --box-total-border: rgba(59, 130, 246, 0.28);
+            --box-total-color: #60a5fa;
+
+            --card-has-border: rgba(16, 185, 129, 0.25);
+            --card-has-shadow: none;
+            --tag-active-color: #34d399;
+            --tag-active-bg: rgba(16, 185, 129, 0.15);
+            --tag-active-border: rgba(16, 185, 129, 0.3);
+
+            --chip-adar-bg: rgba(236, 72, 153, 0.15);
+            --chip-adar-color: #f472b6;
+            --chip-adar-border: rgba(236, 72, 153, 0.25);
+
+            --chip-devem-bg: rgba(192, 132, 252, 0.15);
+            --chip-devem-color: #c084fc;
+            --chip-devem-border: rgba(192, 132, 252, 0.25);
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-danger: #ef4444;
+            --toggle-link: #60a5fa;
+        }
+
+        /* TEMA 2: DARKMODE VERMELHO / CINZA */
+        body.theme-red {
+            --bg-color: #0d0e11;
+            --bg-grad-1: rgba(239, 68, 68, 0.1);
+            --bg-grad-2: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(22, 24, 29, 0.78);
+            --card-border: rgba(255, 255, 255, 0.07);
+            --surface-sheet: #181a20;
+            --surface-stats: rgba(10, 11, 14, 0.7);
+            --input-bg: rgba(10, 11, 14, 0.9);
+            --dense-bg: rgba(10, 11, 14, 0.7);
+            --dense-active: rgba(26, 29, 36, 0.9);
+
+            --accent-primary: #ef4444;
+            --btn-plus-bg: linear-gradient(135deg, #ef4444, #b91c1c);
+            --btn-plus-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+
+            --box-lucro-bg: rgba(245, 158, 11, 0.08);
+            --box-lucro-border: rgba(245, 158, 11, 0.25);
+            --box-lucro-color: #fbbf24;
+
+            --box-adar-bg: rgba(239, 68, 68, 0.1);
+            --box-adar-border: rgba(239, 68, 68, 0.3);
+            --box-adar-color: #f87171;
+
+            --box-total-bg: rgba(255, 255, 255, 0.04);
+            --box-total-border: rgba(255, 255, 255, 0.1);
+            --box-total-color: #e2e8f0;
+
+            --card-has-border: rgba(239, 68, 68, 0.4);
+            --card-has-shadow: 0 0 15px -5px rgba(239, 68, 68, 0.25);
+            --tag-active-color: #fca5a5;
+            --tag-active-bg: rgba(239, 68, 68, 0.15);
+            --tag-active-border: rgba(239, 68, 68, 0.35);
+
+            --chip-adar-bg: rgba(239, 68, 68, 0.15);
+            --chip-adar-color: #fca5a5;
+            --chip-adar-border: rgba(239, 68, 68, 0.28);
+
+            --chip-devem-bg: rgba(168, 85, 247, 0.15);
+            --chip-devem-color: #d8b4fe;
+            --chip-devem-border: rgba(168, 85, 247, 0.28);
+
+            --toggle-link: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        input {
+            user-select: auto;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 12% 12%, var(--bg-grad-1), transparent 40%),
+                radial-gradient(circle at 88% 88%, var(--bg-grad-2), transparent 45%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+            min-height: 100vh;
+            transition: background-color 0.2s ease;
+        }
+
+        #authContainer {
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 14, 17, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 99999;
+        }
+
+        .auth-card {
+            background: rgba(26, 29, 36, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 26px 20px;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .auth-card p {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .auth-toggle {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--toggle-link);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-theme-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--card-border);
+            color: #f8fafc;
+            padding: 5px 9px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.12s ease;
+        }
+
+        .auth-theme-btn:active {
+            transform: scale(0.92);
+        }
+
+        #appArea {
+            display: none;
+        }
+
+        /* NAVBAR RESPONSIVA */
+        .navbar {
+            background: rgba(16, 18, 22, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-brand {
+            font-size: 1.12rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.3px;
+            color: #f8fafc;
+        }
+
+        /* BOTÕES NORMAIS (PC / TABLET) */
+        .navbar-actions-desktop {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+            border: 1px solid var(--card-border);
+            padding: 6px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.12s ease;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.92);
+        }
+
+        .nav-btn-history {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-btn-admin {
+            border-color: rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.12);
+            display: none;
+        }
+
+        .nav-btn-reset {
+            border-color: rgba(239, 68, 68, 0.35);
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+        }
+
+        .nav-btn-logout {
+            border-color: rgba(220, 38, 38, 0.4);
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+        }
+
+        /* HAMBURGER */
+        .nav-btn-menu {
+            display: none;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--card-border);
+            color: #f8fafc;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+
+        .nav-btn-menu:active {
+            transform: scale(0.92);
+        }
+
+        @media (max-width: 550px) {
+            .navbar-actions-desktop {
+                display: none !important;
+            }
+
+            .nav-btn-menu {
+                display: flex !important;
+            }
+        }
+
+        /* MENU BOTTOM SHEET */
+        .menu-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 2000;
+        }
+
+        .menu-sheet-overlay.active {
+            display: flex;
+        }
+
+        .menu-sheet {
+            background: var(--surface-sheet);
+            border: 1px solid var(--card-border);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+            animation: slideUpModal 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.12s ease;
+        }
+
+        .menu-item:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .menu-item-admin {
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.12);
+            display: none;
+        }
+
+        .menu-item-danger {
+            color: #f87171;
+            border-color: rgba(220, 38, 38, 0.3);
+            background: rgba(220, 38, 38, 0.12);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 10px auto 0 auto;
+            padding: 0 10px;
+        }
+
+        /* TOTAIS SUPERIORES */
+        .resumo-global {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .box-global {
+            padding: 10px 6px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .box-lucro {
+            background: var(--box-lucro-bg);
+            border: 1px solid var(--box-lucro-border);
+            color: var(--box-lucro-color);
+        }
+
+        .box-adar {
+            background: var(--box-adar-bg);
+            border: 1px solid var(--box-adar-border);
+            color: var(--box-adar-color);
+        }
+
+        .box-total {
+            background: var(--box-total-bg);
+            border: 1px solid var(--box-total-border);
+            color: var(--box-total-color);
+        }
+
+        .box-global span {
+            display: block;
+            font-size: 1.05rem;
+            margin-top: 2px;
+            font-weight: 900;
+            letter-spacing: -0.4px;
+        }
+
+        .valor-adar {
+            color: var(--chip-adar-color);
+        }
+
+        .valor-devem {
+            color: var(--chip-devem-color);
+        }
+
+        /* CARDS DE DIAS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        @media (min-width: 600px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 900px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .day-card.has-pedidos {
+            border-color: var(--card-has-border);
+            box-shadow: var(--card-has-shadow);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            color: #f8fafc;
+        }
+
+        .count-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
+
+        .count-tag.active {
+            color: var(--tag-active-color);
+            background: var(--tag-active-bg);
+            border-color: var(--tag-active-border);
+        }
+
+        .day-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--surface-stats);
+            padding: 6px 4px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-item small {
+            display: block;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            margin-bottom: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .stat-item b {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .day-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.86rem;
+            font-weight: 700;
+            transition: all 0.12s ease;
+        }
+
+        .btn-action:active {
+            transform: scale(0.94);
+        }
+
+        .btn-plus {
+            flex: 3;
+            background: var(--btn-plus-bg);
+            border: none;
+            box-shadow: var(--btn-plus-shadow);
+        }
+
+        .btn-eye {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        /* MODAIS BOTTOM SHEET */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        @media (min-width: 600px) {
+            .modal-overlay {
+                align-items: center;
+                padding: 20px;
+            }
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--surface-sheet);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 580px;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom);
+            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.8);
+            animation: slideUpModal 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .modal-drag-handle {
+            width: 34px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 8px auto 2px auto;
+        }
+
+        @media (min-width: 600px) {
+            .modal-card {
+                border-radius: 22px;
+                padding-bottom: 0;
+            }
+
+            .modal-drag-handle {
+                display: none;
+            }
+        }
+
+        .modal-header {
+            padding: 10px 16px 12px 16px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .btn-modal-close {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 12px 14px;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 11px 13px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 1px var(--accent-primary);
+        }
+
+        .btn-submit {
+            background: var(--btn-plus-bg);
+            color: #fff;
+            border: none;
+            padding: 13px;
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: var(--btn-plus-shadow);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.96);
+        }
+
+        /* LISTA ULTRA-COMPACTA */
+        .dense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dense-row {
+            background: var(--dense-bg);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 38px;
+            transition: background 0.1s ease;
+        }
+
+        .dense-row:active {
+            background: var(--dense-active);
+        }
+
+        .dense-left {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .dense-name {
+            font-size: 0.84rem;
+            font-weight: 750;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 115px;
+        }
+
+        .dense-values {
+            font-size: 0.68rem;
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .val-pagou {
+            color: #34d399;
+        }
+
+        .val-paguei {
+            color: #f87171;
+        }
+
+        .val-sep {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.6rem;
+        }
+
+        .dense-day {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .dense-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .dense-taxa {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.12);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .dense-adar {
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .dense-adar.valor-adar {
+            background: var(--chip-adar-bg);
+            color: var(--chip-adar-color);
+            border: 1px solid var(--chip-adar-border);
+        }
+
+        .dense-adar.valor-devem {
+            background: var(--chip-devem-bg);
+            color: var(--chip-devem-color);
+            border: 1px solid var(--chip-devem-border);
+        }
+
+        .dense-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .dense-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dense-btn-del {
+            color: #f87171;
+        }
+
+        @keyframes slideUpModal {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PORTÃO DE LOGIN OBRIGATÓRIO -->
+    <div id="authContainer">
+        <div class="auth-card">
+            <button class="auth-theme-btn" onclick="alternarTemaVisual()" title="Alternar Tema">🎨 Tema</button>
+            <h2 id="authTitulo">🛵 Entregas Login</h2>
+            <p id="authSubtitulo">Inicia sessão para gerir os teus registos individuais.</p>
+            <div class="form-group">
+                <div>
+                    <label>Email</label>
+                    <input type="email" id="authEmail" placeholder="estafeta@email.com">
+                </div>
+                <div>
+                    <label>Palavra-passe (mínimo 6 carateres)</label>
+                    <input type="password" id="authPassword" placeholder="••••••••">
+                </div>
+                <button class="btn-submit" id="btnAuthAcao" onclick="executarAutenticacao()">Entrar</button>
+                <div class="auth-toggle" id="authToggle" onclick="alternarModoAuth()">Não tens conta? Criar conta</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÁREA PRINCIPAL DA APP -->
+    <div id="appArea">
+        <nav class="navbar">
+            <div class="navbar-brand">🛵 <span id="navTitulo">Entregas</span></div>
+
+            <!-- Barra de Ações Completa para PC / Tablets (> 550px) -->
+            <div class="navbar-actions-desktop">
+                <button class="nav-btn" onclick="alternarTemaVisual()">🎨 Tema</button>
+                <button class="nav-btn nav-btn-admin" id="btnNavAdmin" onclick="abrirModalAdmin()">👑 Admin</button>
+                <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Semanas</button>
+                <button class="nav-btn nav-btn-reset" onclick="fecharSemana()">🧹</button>
+                <button class="nav-btn nav-btn-logout" onclick="terminarSessao()">🚪 Sair</button>
+            </div>
+
+            <!-- Botão Hamburger Só para Mobile Pequeno (<= 550px) -->
+            <button class="nav-btn-menu" onclick="abrirMenuAcoes()">⋮</button>
+        </nav>
+
+        <div class="container">
+            <div class="resumo-global">
+                <div class="box-global box-lucro">Lucro <span id="gloLucro">0.00€</span></div>
+                <div class="box-global box-adar">A Dar <span id="gloAdar">0.00€</span></div>
+                <div class="box-global box-total">Total <span id="gloTotal">0.00€</span></div>
+            </div>
+
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+    </div>
+
+    <!-- MENU DE OPÇÕES (HAMBURGER / 3 PONTINHOS EM MOBILE <= 550px) -->
+    <div class="menu-sheet-overlay" id="menuSheetOverlay" onclick="fecharMenuAcoesFora(event)">
+        <div class="menu-sheet">
+            <div class="modal-drag-handle"></div>
+            <div class="menu-item" onclick="alternarTemaVisual(); fecharMenuAcoes();">
+                🎨 <span>Alternar Tema (Azul / Vermelho)</span>
+            </div>
+            <div class="menu-item menu-item-admin" id="btnMenuAdmin" onclick="fecharMenuAcoes(); abrirModalAdmin();">
+                👑 <span>Painel de Estafetas (Admin)</span>
+            </div>
+            <div class="menu-item" onclick="fecharMenuAcoes(); abrirModalHistorico();">
+                📜 <span>Semanas Arquivadas</span>
+            </div>
+            <div class="menu-item" onclick="fecharMenuAcoes(); fecharSemana();">
+                🧹 <span>Fechar e Limpar Semana</span>
+            </div>
+            <div class="menu-item menu-item-danger" onclick="fecharMenuAcoes(); terminarSessao();">
+                🚪 <span>Terminar Sessão</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FORMULÁRIO -->
+    <div class="modal-overlay" id="modalFormOverlay" onclick="fecharModalFora(event, 'modalFormOverlay')">
+        <div class="modal-card">
+            <div class="modal-drag-handle"></div>
+            <div class="modal-header">
+                <h3 id="modalFormTitulo">➕ Registar Entrega</h3>
+                <button class="btn-modal-close" onclick="fecharModalForm()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        <label>Local / Restaurante</label>
+                        <input type="text" id="formLocal" placeholder="ex: Mc, Divinal, Padaria">
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Pagou (€)</label>
+                            <input type="number" step="0.01" inputmode="decimal" id="formPagou" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label>Paguei (€)</label>
+                            <input type="number" step="0.01" inputmode="decimal" id="formPaguei" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Taxa Entrega / Lucro (€)</label>
+                        <input type="number" step="0.01" inputmode="decimal" id="formTaxa" placeholder="0.00">
+                    </div>
+                    <button class="btn-submit" id="btnSubmitForm" onclick="submeterFormulario()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LISTA DO DIA -->
+    <div class="modal-overlay" id="modalListOverlay" onclick="fecharModalFora(event, 'modalListOverlay')">
+        <div class="modal-card">
+            <div class="modal-drag-handle"></div>
+            <div class="modal-header">
+                <h3 id="modalListTitulo">📦 Pedidos</h3>
+                <button class="btn-modal-close" onclick="fecharModalList()">✕</button>
+            </div>
+            <div class="modal-body" id="modalListConteudo"></div>
+        </div>
+    </div>
+
+    <!-- MODAL HISTÓRICO DE SEMANAS -->
+    <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
+        <div class="modal-card">
+            <div class="modal-drag-handle"></div>
+            <div class="modal-header">
+                <h3>📜 Semanas Anteriores</h3>
+                <button class="btn-modal-close"
+                    onclick="document.getElementById('modalHistoryOverlay').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body" id="modalHistoryConteudo">
+                <p style="text-align:center; color: var(--text-muted); padding: 20px;">A carregar...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN -->
+    <div class="modal-overlay" id="modalAdminOverlay" onclick="fecharModalFora(event, 'modalAdminOverlay')">
+        <div class="modal-card">
+            <div class="modal-drag-handle"></div>
+            <div class="modal-header">
+                <h3>👑 Painel de Estafetas</h3>
+                <button class="btn-modal-close"
+                    onclick="document.getElementById('modalAdminOverlay').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="adminAreaGeral">
+                    <p style="text-align:center; color: var(--text-muted); padding: 20px 0;">A carregar contas...</p>
+                </div>
+                <div id="adminAreaDetalhe" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= GESTÃO DE TEMA =================
+        function aplicarTemaInicial() {
+            const tema = localStorage.getItem('app_tema_estafeta');
+            if (tema === 'red') {
+                document.body.classList.add('theme-red');
+            } else {
+                document.body.classList.remove('theme-red');
+            }
+        }
+
+        function alternarTemaVisual() {
+            const ativo = document.body.classList.toggle('theme-red');
+            localStorage.setItem('app_tema_estafeta', ativo ? 'red' : 'default');
+        }
+
+        aplicarTemaInicial();
+
+        // ================= CONFIGURAÇÃO SUPABASE =================
+        const SUPABASE_URL = "https://eaelpqgocmbszfwiexpq.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_U8EVuur6sYVR3e6LeCeKcg_xbwBCIHQ";
+
+        const ADMIN_EMAILS = [
+            "britess24s@gmail.com"
+        ];
+
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let utilizadorAtual = null;
+        let authModoRegisto = false;
+        let registos = [];
+        let historicoCarregado = [];
+        let diaAtivo = null;
+        let idEdicao = null;
+
+        const diasSemana = [
+            "Segunda-Feira", "Terça-Feira", "Quarta-Feira",
+            "Quinta-Feira", "Sexta-Feira", "Sábado", "Domingo"
+        ];
+
+        // --- SISTEMA DE SESSÃO ---
+        async function verificarSessao() {
+            try {
+                const { data: { session } } = await sbClient.auth.getSession();
+                if (session && session.user) {
+                    utilizadorAtual = session.user;
+                    abrirApp();
+                } else {
+                    fecharApp();
+                }
+            } catch (e) {
+                fecharApp();
+            }
+        }
+
+        async function abrirApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appArea').style.display = 'block';
+            document.getElementById('navTitulo').innerText = utilizadorAtual.email.split('@')[0];
+
+            const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === utilizadorAtual.email.toLowerCase());
+            document.getElementById('btnNavAdmin').style.display = isAdmin ? 'inline-flex' : 'none';
+            document.getElementById('btnMenuAdmin').style.display = isAdmin ? 'flex' : 'none';
+
+            await carregarDadosDaNuvem();
+        }
+
+        function fecharApp() {
+            utilizadorAtual = null;
+            registos = [];
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('appArea').style.display = 'none';
+        }
+
+        function alternarModoAuth() {
+            authModoRegisto = !authModoRegisto;
+            document.getElementById('authTitulo').innerText = authModoRegisto ? "Criar Conta" : "🛵 Entregas Login";
+            document.getElementById('authSubtitulo').innerText = authModoRegisto ? "Cria o teu perfil multi-user." : "Inicia sessão para gerir os teus registos individuais.";
+            document.getElementById('btnAuthAcao').innerText = authModoRegisto ? "Registar e Entrar" : "Entrar";
+            document.getElementById('authToggle').innerText = authModoRegisto ? "Já tens conta? Fazer Login" : "Não tens conta? Criar conta";
+        }
+
+        async function executarAutenticacao() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+
+            if (!email || !password) return alert("Preenche email e password.");
+            if (password.length < 6) return alert("A password tem de ter pelo menos 6 caracteres.");
+
+            if (authModoRegisto) {
+                const { data, error } = await sbClient.auth.signUp({ email, password });
+                if (error) return alert("Erro no registo: " + error.message);
+
+                if (data.session) {
+                    utilizadorAtual = data.user;
+                    abrirApp();
+                } else {
+                    alert("Conta criada com sucesso! Podes iniciar sessão.");
+                    alternarModoAuth();
+                }
+            } else {
+                const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+                if (error) return alert("Erro ao entrar: " + error.message);
+
+                utilizadorAtual = data.user;
+                abrirApp();
+            }
+        }
+
+        async function terminarSessao() {
+            if (!confirm("Terminar sessão?")) return;
+            await sbClient.auth.signOut();
+            fecharApp();
+        }
+
+        // --- CONTROLO DO MENU GAVETA ---
+        function abrirMenuAcoes() {
+            document.getElementById('menuSheetOverlay').classList.add('active');
+        }
+
+        function fecharMenuAcoes() {
+            document.getElementById('menuSheetOverlay').classList.remove('active');
+        }
+
+        function fecharMenuAcoesFora(e) {
+            if (e.target.id === 'menuSheetOverlay') fecharMenuAcoes();
+        }
+
+        // --- PERSISTÊNCIA AUTOMÁTICA NA NUVEM ---
+        async function salvarDados() {
+            if (!utilizadorAtual) return;
+            try {
+                await sbClient.from('entregas_ativas').upsert({
+                    user_id: utilizadorAtual.id,
+                    registos: registos,
+                    atualizado_em: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Erro ao gravar:", e);
+            }
+        }
+
+        async function carregarDadosDaNuvem() {
+            if (!utilizadorAtual) return;
+
+            try {
+                const { data, error } = await sbClient
+                    .from('entregas_ativas')
+                    .select('registos')
+                    .eq('user_id', utilizadorAtual.id)
+                    .single();
+
+                if (data && Array.isArray(data.registos)) {
+                    registos = data.registos;
+                } else {
+                    registos = [];
+                }
+                renderizar();
+            } catch (e) {
+                console.error("Erro ao carregar dados:", e);
+            }
+        }
+
+        // --- CÁLCULOS & INTERFACE ---
+        function calcularTotais(lista = registos) {
+            let lucro = 0, adar = 0;
+            lista.forEach(r => {
+                const taxa = parseFloat(r.taxaEntrega) || 0;
+                const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                lucro += taxa;
+                adar += (valTaxas - taxa);
+            });
+            return { lucro, adar, total: lucro + adar, count: lista.length };
+        }
+
+        function formatarValorAdar(valor) {
+            const valorNumerico = parseFloat(valor) || 0;
+            const deve = valorNumerico < 0;
+            return {
+                texto: deve ? `-${Math.abs(valorNumerico).toFixed(2)}€` : `+${valorNumerico.toFixed(2)}€`,
+                classe: deve ? 'valor-devem' : 'valor-adar'
+            };
+        }
+
+        function renderizar() {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            const globais = calcularTotais(registos);
+            const adarGlobal = formatarValorAdar(globais.adar);
+            document.getElementById('gloLucro').innerText = globais.lucro.toFixed(2) + '€';
+            document.getElementById('gloAdar').innerText = adarGlobal.texto;
+            document.getElementById('gloAdar').className = adarGlobal.classe;
+            document.getElementById('gloTotal').innerText = globais.total.toFixed(2) + '€';
+
+            diasSemana.forEach(dia => {
+                const filtrados = registos.filter(r => r.dia === dia);
+                const stats = calcularTotais(filtrados);
+                const adarDia = formatarValorAdar(stats.adar);
+                const temPedidos = stats.count > 0;
+
+                grid.innerHTML += `
+                    <div class="day-card ${temPedidos ? 'has-pedidos' : ''}">
+                        <div class="day-header">
+                            <span class="day-title">${dia}</span>
+                            <span class="count-tag ${temPedidos ? 'active' : ''}">${stats.count} pedidos</span>
+                        </div>
+                        <div class="day-stats">
+                            <div class="stat-item"><small>Lucro</small><b style="color: #fbbf24;">${stats.lucro.toFixed(2)}€</b></div>
+                            <div class="stat-item"><small>A Dar</small><b class="${adarDia.classe}">${adarDia.texto}</b></div>
+                            <div class="stat-item"><small>Total</small><b>${stats.total.toFixed(2)}€</b></div>
+                        </div>
+                        <div class="day-actions">
+                            <button class="btn-action btn-plus" onclick="abrirModalForm('${dia}')">➕ Registar</button>
+                            <button class="btn-action btn-eye" onclick="abrirModalList('${dia}')">👁</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- FORMULÁRIO ---
+        function abrirModalForm(dia, indexEditar = null) {
+            diaAtivo = dia;
+            idEdicao = indexEditar;
+
+            const modal = document.getElementById('modalFormOverlay');
+            const titulo = document.getElementById('modalFormTitulo');
+            const btnSubmit = document.getElementById('btnSubmitForm');
+
+            if (indexEditar !== null) {
+                const item = registos[indexEditar];
+                titulo.innerText = `✏️ Editar (${dia})`;
+                btnSubmit.innerText = "Atualizar Entrega";
+
+                document.getElementById('formLocal').value = item.local;
+                document.getElementById('formPagou').value = item.pagou;
+                document.getElementById('formPaguei').value = item.paguei;
+                document.getElementById('formTaxa').value = item.taxaEntrega;
+            } else {
+                titulo.innerText = `➕ Registar (${dia})`;
+                btnSubmit.innerText = "Adicionar Entrega";
+                document.getElementById('formLocal').value = '';
+                document.getElementById('formPagou').value = '';
+                document.getElementById('formPaguei').value = '';
+                document.getElementById('formTaxa').value = '';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function fecharModalForm() {
+            document.getElementById('modalFormOverlay').classList.remove('active');
+            diaAtivo = null;
+            idEdicao = null;
+        }
+
+        async function submeterFormulario() {
+            const local = document.getElementById('formLocal').value.trim();
+            const pagou = parseFloat(document.getElementById('formPagou').value) || 0;
+            const paguei = parseFloat(document.getElementById('formPaguei').value) || 0;
+            const taxaEntrega = parseFloat(document.getElementById('formTaxa').value) || 0;
+
+            if (!local) return alert("Indica o nome do local!");
+
+            const payload = { dia: diaAtivo, local, pagou, paguei, taxaEntrega };
+
+            if (idEdicao !== null) registos[idEdicao] = payload;
+            else registos.push(payload);
+
+            fecharModalForm();
+            renderizar();
+            await salvarDados();
+        }
+
+        // --- LISTA DO DIA ---
+        function abrirModalList(dia) {
+            diaAtivo = dia;
+            document.getElementById('modalListTitulo').innerText = `📦 ${dia}`;
+            const entregas = registos.filter(r => r.dia === dia);
+            const container = document.getElementById('modalListConteudo');
+
+            if (entregas.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px 0;">Nenhum pedido registado.</p>`;
+            } else {
+                let html = `<div class="dense-list">`;
+                entregas.forEach(r => {
+                    const indexReal = registos.indexOf(r);
+                    const valTaxas = r.pagou - r.paguei;
+                    const adarPedido = formatarValorAdar(valTaxas - r.taxaEntrega);
+
+                    html += `
+                        <div class="dense-row">
+                            <div class="dense-left">
+                                <span class="dense-name">${r.local}</span>
+                                <div class="dense-values">
+                                    <span class="val-pagou">${r.pagou.toFixed(1)}€</span>
+                                    <span class="val-sep">/</span>
+                                    <span class="val-paguei">${r.paguei.toFixed(1)}€</span>
+                                </div>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">+${r.taxaEntrega.toFixed(1)}€</span>
+                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                                <button class="dense-btn" onclick="editarViaModal(${indexReal})">✏️</button>
+                                <button class="dense-btn dense-btn-del" onclick="removerRegisto(${indexReal})">✕</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+
+            document.getElementById('modalListOverlay').classList.add('active');
+        }
+
+        function fecharModalList() {
+            document.getElementById('modalListOverlay').classList.remove('active');
+        }
+
+        function editarViaModal(index) {
+            const dia = registos[index].dia;
+            fecharModalList();
+            abrirModalForm(dia, index);
+        }
+
+        async function removerRegisto(index) {
+            if (confirm("Apagar este pedido?")) {
+                const dia = registos[index].dia;
+                registos.splice(index, 1);
+                renderizar();
+                abrirModalList(dia);
+                await salvarDados();
+            }
+        }
+
+        // --- HISTÓRICO ---
+        async function abrirModalHistorico() {
+            const container = document.getElementById('modalHistoryConteudo');
+            document.getElementById('modalHistoryOverlay').classList.add('active');
+
+            if (!utilizadorAtual) return;
+
+            container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar semanas...</p>`;
+
+            try {
+                const { data, error } = await sbClient
+                    .from('entregas_historico')
+                    .select('*')
+                    .eq('user_id', utilizadorAtual.id)
+                    .order('criado_em', { ascending: false });
+
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">Ainda não há semanas arquivadas.</p>`;
+                    return;
+                }
+
+                historicoCarregado = data;
+
+                container.innerHTML = data.map((item, index) => `
+                    <div style="background:var(--dense-bg); padding:10px 12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <b style="font-size: 0.9rem;">📅 Semana ${item.semana_fim}</b>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                                Lucro: <span style="color:#fbbf24; font-weight:700;">${item.resumo.lucro_total}</span> | Pedidos: ${item.resumo.total_pedidos}
+                            </div>
+                        </div>
+                        <button class="nav-btn nav-btn-history" onclick="abrirDetalheSemana(${index})">👁 Ver</button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px;">Erro ao carregar histórico.</p>`;
+            }
+        }
+
+        function abrirDetalheSemana(index) {
+            const semana = historicoCarregado[index];
+            const container = document.getElementById('modalHistoryConteudo');
+            const lista = semana.registos || [];
+            const totais = calcularTotais(lista);
+            const adar = formatarValorAdar(totais.adar);
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <button class="nav-btn" onclick="abrirModalHistorico()">⬅️ Voltar</button>
+                    <button class="nav-btn" style="background:var(--btn-plus-bg); color:#fff; border:none;" onclick="restaurarSemana(${index})">🔄 Restaurar</button>
+                </div>
+
+                <div style="background:var(--dense-bg); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                    <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+                </div>
+
+                <div class="dense-list">
+            `;
+
+            lista.forEach(r => {
+                const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                const adarPedido = formatarValorAdar(valTaxas - (parseFloat(r.taxaEntrega) || 0));
+                const diaCurto = r.dia.split('-')[0];
+
+                html += `
+                    <div class="dense-row">
+                        <div class="dense-left">
+                            <span class="dense-name">${r.local}</span>
+                            <div class="dense-values">
+                                <span class="val-pagou">${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                <span class="val-sep">/</span>
+                                <span class="val-paguei">${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
+                            </div>
+                            <span class="dense-day">· ${diaCurto}</span>
+                        </div>
+                        <div class="dense-right">
+                            <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // --- RESTAURAR (APAGA DO HISTÓRICO) ---
+        async function restaurarSemana(index) {
+            if (!confirm("Queres restaurar estes registos para a semana atual? Os dados atuais serão substituídos e esta semana sairá do histórico.")) return;
+
+            const semanaARestaurar = historicoCarregado[index];
+            registos = semanaARestaurar.registos || [];
+
+            if (semanaARestaurar.id) {
+                try {
+                    await sbClient
+                        .from('entregas_historico')
+                        .delete()
+                        .eq('id', semanaARestaurar.id);
+                } catch (e) {
+                    console.error("Erro ao apagar histórico:", e);
+                }
+            }
+
+            renderizar();
+            await salvarDados();
+            document.getElementById('modalHistoryOverlay').classList.remove('active');
+            alert("Semana restaurada com sucesso e removida do histórico!");
+        }
+
+        // --- CÁLCULO DO DOMINGO MAIS PRÓXIMO ---
+        function obterDomingoMaisProximo() {
+            const data = new Date();
+            const diaDaSemana = data.getDay(); // 0: Domingo, 1: Seg, ..., 6: Sáb
+
+            let diffDias = 0;
+            if (diaDaSemana !== 0) {
+                const diasAtras = diaDaSemana;
+                const diasFrente = 7 - diaDaSemana;
+                diffDias = diasFrente <= diasAtras ? diasFrente : -diasAtras;
+            }
+
+            const domingo = new Date(data);
+            domingo.setDate(data.getDate() + diffDias);
+
+            const d = String(domingo.getDate()).padStart(2, '0');
+            const m = String(domingo.getMonth() + 1).padStart(2, '0');
+            const y = domingo.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        // --- FECHAR SEMANA (ARQUIVAR) ---
+        async function fecharSemana() {
+            if (registos.length === 0) return alert("Sem pedidos para arquivar.");
+            if (!confirm("Arquivar esta semana e colocar o painel a zeros?")) return;
+
+            const totais = calcularTotais(registos);
+            const semanaFim = obterDomingoMaisProximo();
+
+            if (utilizadorAtual) {
+                await sbClient.from('entregas_historico').insert([{
+                    user_id: utilizadorAtual.id,
+                    semana_fim: semanaFim,
+                    resumo: { lucro_total: totais.lucro.toFixed(2) + "€", total_pedidos: totais.count },
+                    registos: registos
+                }]);
+            }
+
+            registos = [];
+            renderizar();
+            await salvarDados();
+            alert(`Semana arquivada como (${semanaFim}) e painel limpo!`);
+        }
+
+        // --- MODO ADMIN ---
+        let adminUsersCache = [];
+
+        async function abrirModalAdmin() {
+            document.getElementById('modalAdminOverlay').classList.add('active');
+            document.getElementById('adminAreaDetalhe').style.display = 'none';
+            const areaGeral = document.getElementById('adminAreaGeral');
+            areaGeral.style.display = 'block';
+            areaGeral.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar contas...</p>`;
+
+            try {
+                const { data: ativas, error: errAtivas } = await sbClient
+                    .from('entregas_ativas')
+                    .select('user_id, registos, atualizado_em');
+
+                if (errAtivas) throw errAtivas;
+
+                if (!ativas || ativas.length === 0) {
+                    areaGeral.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">Nenhum registo encontrado.</p>`;
+                    return;
+                }
+
+                adminUsersCache = ativas;
+
+                let html = `<div class="dense-list">`;
+                ativas.forEach((item, idx) => {
+                    const totalPed = Array.isArray(item.registos) ? item.registos.length : 0;
+                    const totais = calcularTotais(item.registos || []);
+                    const userIdCurto = item.user_id.substring(0, 8);
+
+                    html += `
+                        <div class="dense-row" style="height:44px;">
+                            <div class="dense-left">
+                                <span class="dense-name">👤 ID: ${userIdCurto}</span>
+                                <span class="dense-day">${totalPed} pedidos</span>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">${totais.lucro.toFixed(1)}€</span>
+                                <button class="nav-btn" style="border-color:rgba(245,158,11,0.4); color:#fbbf24; background:rgba(245,158,11,0.15); padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                areaGeral.innerHTML = html;
+            } catch (e) {
+                console.error("Erro completo:", e);
+                areaGeral.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px 0; font-size:0.8rem;">
+                    Erro: ${e.message || JSON.stringify(e)}
+                </p>`;
+            }
+        }
+
+        function verEstafetaAdmin(idx) {
+            const estafeta = adminUsersCache[idx];
+            const areaGeral = document.getElementById('adminAreaGeral');
+            const areaDetalhe = document.getElementById('adminAreaDetalhe');
+            const lista = estafeta.registos || [];
+            const totais = calcularTotais(lista);
+            const adar = formatarValorAdar(totais.adar);
+
+            areaGeral.style.display = 'none';
+            areaDetalhe.style.display = 'block';
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <button class="nav-btn" onclick="voltarListaAdmin()">⬅️ Voltar</button>
+                    <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ID: ${estafeta.user_id.substring(0, 8)}</span>
+                </div>
+
+                <div style="background:var(--dense-bg); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                    <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+                </div>
+
+                <div class="dense-list">
+            `;
+
+            if (lista.length === 0) {
+                html += `<p style="text-align:center; color:var(--text-muted); padding:15px 0;">Sem pedidos ativos nesta conta.</p>`;
+            } else {
+                lista.forEach(r => {
+                    const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                    const adarPedido = formatarValorAdar(valTaxas - (parseFloat(r.taxaEntrega) || 0));
+                    const diaCurto = r.dia.split('-')[0];
+
+                    html += `
+                        <div class="dense-row">
+                            <div class="dense-left">
+                                <span class="dense-name">${r.local}</span>
+                                <div class="dense-values">
+                                    <span class="val-pagou">${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                    <span class="val-sep">/</span>
+                                    <span class="val-paguei">${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
+                                </div>
+                                <span class="dense-day">· ${diaCurto}</span>
+                            </div>
+                            <div class="dense-right">
+                                <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            areaDetalhe.innerHTML = html;
+        }
+
+        function voltarListaAdmin() {
+            document.getElementById('adminAreaDetalhe').style.display = 'none';
+            document.getElementById('adminAreaGeral').style.display = 'block';
+        }
+
+        function fecharModalFora(e, id) {
+            if (e.target.id === id) document.getElementById(id).classList.remove('active');
+        }
+
+        // Inicialização
+        verificarSessao();
+    </script>
+</body>
+
+</html>
