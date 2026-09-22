@@ -191,7 +191,7 @@
             color: #f87171;
         }
 
-        /* HAMBURGER (ESCONDIDO POR DEFEITO) */
+        /* HAMBURGER */
         .nav-btn-menu {
             display: none;
             background: rgba(255, 255, 255, 0.08);
@@ -609,6 +609,36 @@
             transform: scale(0.96);
         }
 
+        /* TABS NO ADMIN */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: rgba(8, 13, 26, 0.5);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .admin-tab {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.12s ease;
+        }
+
+        .admin-tab.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
         /* LISTA ULTRA-COMPACTA & RESPONSIVA */
         .dense-list {
             display: flex;
@@ -792,7 +822,6 @@
         <nav class="navbar">
             <div class="navbar-brand">🛵 <span id="navTitulo">Entregas</span></div>
 
-            <!-- Barra de Ações Completa para PC / Tablets (> 400px) -->
             <div class="navbar-actions-desktop">
                 <button class="nav-btn nav-btn-admin" id="btnNavAdmin" onclick="abrirModalAdmin()">👑 Admin</button>
                 <button class="nav-btn nav-btn-history" onclick="abrirModalHistorico()">📜 Semanas</button>
@@ -800,7 +829,6 @@
                 <button class="nav-btn nav-btn-logout" onclick="terminarSessao()">🚪 Sair</button>
             </div>
 
-            <!-- Botão Hamburger Só para Mobile Pequeno (<= 400px) -->
             <button class="nav-btn-menu" onclick="abrirMenuAcoes()">⋮</button>
         </nav>
 
@@ -880,7 +908,7 @@
         </div>
     </div>
 
-    <!-- MODAL HISTÓRICO DE SEMANAS -->
+    <!-- MODAL HISTÓRICO DE SEMANAS (DO PRÓPRIO UTILIZADOR) -->
     <div class="modal-overlay" id="modalHistoryOverlay" onclick="fecharModalFora(event, 'modalHistoryOverlay')">
         <div class="modal-card">
             <div class="modal-drag-handle"></div>
@@ -957,7 +985,6 @@
             document.getElementById('appArea').style.display = 'block';
             document.getElementById('navTitulo').innerText = utilizadorAtual.email.split('@')[0];
 
-            // Mostra o botão Admin (no desktop e no menu mobile) se for admin
             const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === utilizadorAtual.email.toLowerCase());
             document.getElementById('btnNavAdmin').style.display = isAdmin ? 'inline-flex' : 'none';
             document.getElementById('btnMenuAdmin').style.display = isAdmin ? 'flex' : 'none';
@@ -1100,22 +1127,22 @@
                 const temPedidos = stats.count > 0;
 
                 grid.innerHTML += `
-                    <div class="day-card ${temPedidos ? 'has-pedidos' : ''}">
-                        <div class="day-header">
-                            <span class="day-title">${dia}</span>
-                            <span class="count-tag ${temPedidos ? 'active' : ''}">${stats.count} pedidos</span>
-                        </div>
-                        <div class="day-stats">
-                            <div class="stat-item"><small>Lucro</small><b style="color: #fbbf24;">${stats.lucro.toFixed(2)}€</b></div>
-                            <div class="stat-item"><small>A Dar</small><b class="${adarDia.classe}">${adarDia.texto}</b></div>
-                            <div class="stat-item"><small>Total</small><b>${stats.total.toFixed(2)}€</b></div>
-                        </div>
-                        <div class="day-actions">
-                            <button class="btn-action btn-plus" onclick="abrirModalForm('${dia}')">➕ Registar</button>
-                            <button class="btn-action btn-eye" onclick="abrirModalList('${dia}')">👁</button>
-                        </div>
+                <div class="day-card ${temPedidos ? 'has-pedidos' : ''}">
+                    <div class="day-header">
+                        <span class="day-title">${dia}</span>
+                        <span class="count-tag ${temPedidos ? 'active' : ''}">${stats.count} pedidos</span>
                     </div>
-                `;
+                    <div class="day-stats">
+                        <div class="stat-item"><small>Lucro</small><b style="color: #fbbf24;">${stats.lucro.toFixed(2)}€</b></div>
+                        <div class="stat-item"><small>A Dar</small><b class="${adarDia.classe}">${adarDia.texto}</b></div>
+                        <div class="stat-item"><small>Total</small><b>${stats.total.toFixed(2)}€</b></div>
+                    </div>
+                    <div class="day-actions">
+                        <button class="btn-action btn-plus" onclick="abrirModalForm('${dia}')">➕ Registar</button>
+                        <button class="btn-action btn-eye" onclick="abrirModalList('${dia}')">👁</button>
+                    </div>
+                </div>
+            `;
             });
         }
 
@@ -1190,23 +1217,23 @@
                     const adarPedido = formatarValorAdar(valTaxas - r.taxaEntrega);
 
                     html += `
-                        <div class="dense-row">
-                            <div class="dense-left">
-                                <span class="dense-name">${r.local}</span>
-                                <div class="dense-values">
-                                    <span class="val-pagou">Pagou ${r.pagou.toFixed(1)}€</span>
-                                    <span class="val-sep">/</span>
-                                    <span class="val-paguei">Paguei ${r.paguei.toFixed(1)}€</span>
-                                </div>
-                            </div>
-                            <div class="dense-right">
-                                <span class="dense-taxa">+${r.taxaEntrega.toFixed(1)}€</span>
-                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
-                                <button class="dense-btn" onclick="editarViaModal(${indexReal})">✏️</button>
-                                <button class="dense-btn dense-btn-del" onclick="removerRegisto(${indexReal})">✕</button>
+                    <div class="dense-row">
+                        <div class="dense-left">
+                            <span class="dense-name">${r.local}</span>
+                            <div class="dense-values">
+                                <span class="val-pagou">Pagou ${r.pagou.toFixed(1)}€</span>
+                                <span class="val-sep">/</span>
+                                <span class="val-paguei">Paguei ${r.paguei.toFixed(1)}€</span>
                             </div>
                         </div>
-                    `;
+                        <div class="dense-right">
+                            <span class="dense-taxa">+${r.taxaEntrega.toFixed(1)}€</span>
+                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                            <button class="dense-btn" onclick="editarViaModal(${indexReal})">✏️</button>
+                            <button class="dense-btn dense-btn-del" onclick="removerRegisto(${indexReal})">✕</button>
+                        </div>
+                    </div>
+                `;
                 });
                 html += `</div>`;
                 container.innerHTML = html;
@@ -1235,7 +1262,7 @@
             }
         }
 
-        // --- HISTÓRICO ---
+        // --- HISTÓRICO PESSOAL ---
         async function abrirModalHistorico() {
             const container = document.getElementById('modalHistoryConteudo');
             document.getElementById('modalHistoryOverlay').classList.add('active');
@@ -1259,16 +1286,16 @@
                 historicoCarregado = data;
 
                 container.innerHTML = data.map((item, index) => `
-                    <div style="background:rgba(8, 13, 26, 0.7); padding:10px 12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <b style="font-size: 0.9rem;">📅 Semana ${item.semana_fim}</b>
-                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                                Lucro: <span style="color:#fbbf24; font-weight:700;">${item.resumo.lucro_total}</span> | Pedidos: ${item.resumo.total_pedidos}
-                            </div>
+                <div style="background:rgba(8, 13, 26, 0.7); padding:10px 12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b style="font-size: 0.9rem;">📅 Semana ${item.semana_fim}</b>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                            Lucro: <span style="color:#fbbf24; font-weight:700;">${item.resumo.lucro_total}</span> | Pedidos: ${item.resumo.total_pedidos}
                         </div>
-                        <button class="nav-btn nav-btn-history" onclick="abrirDetalheSemana(${index})">👁 Ver</button>
                     </div>
-                `).join('');
+                    <button class="nav-btn nav-btn-history" onclick="abrirDetalheSemana(${index})">👁 Ver</button>
+                </div>
+            `).join('');
             } catch (e) {
                 container.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px;">Erro ao carregar histórico.</p>`;
             }
@@ -1282,19 +1309,19 @@
             const adar = formatarValorAdar(totais.adar);
 
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <button class="nav-btn" onclick="abrirModalHistorico()">⬅️ Voltar</button>
-                    <button class="nav-btn" style="background:#2563eb; color:#fff; border:none;" onclick="restaurarSemana(${index})">🔄 Restaurar</button>
-                </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <button class="nav-btn" onclick="abrirModalHistorico()">⬅️ Voltar</button>
+                <button class="nav-btn" style="background:#2563eb; color:#fff; border:none;" onclick="restaurarSemana(${index})">🔄 Restaurar</button>
+            </div>
 
-                <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
-                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
-                    <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
-                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
-                </div>
+            <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+            </div>
 
-                <div class="dense-list">
-            `;
+            <div class="dense-list">
+        `;
 
             lista.forEach(r => {
                 const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
@@ -1302,44 +1329,66 @@
                 const diaCurto = r.dia.split('-')[0];
 
                 html += `
-                    <div class="dense-row">
-                        <div class="dense-left">
-                            <span class="dense-name">${r.local}</span>
-                            <div class="dense-values">
-                                <span class="val-pagou">Pagou ${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
-                                <span class="val-sep">/</span>
-                                <span class="val-paguei">Paguei ${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
-                            </div>
-                            <span class="dense-day">· ${diaCurto}</span>
+                <div class="dense-row">
+                    <div class="dense-left">
+                        <span class="dense-name">${r.local}</span>
+                        <div class="dense-values">
+                            <span class="val-pagou">Pagou ${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                            <span class="val-sep">/</span>
+                            <span class="val-paguei">Paguei ${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
                         </div>
-                        <div class="dense-right">
-                            <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
-                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
-                        </div>
+                        <span class="dense-day">· ${diaCurto}</span>
                     </div>
-                `;
+                    <div class="dense-right">
+                        <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                        <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                    </div>
+                </div>
+            `;
             });
 
             html += `</div>`;
             container.innerHTML = html;
         }
 
+        // RESTAURAR SEMANA E ELIMINAR DO HISTÓRICO
         async function restaurarSemana(index) {
-            if (!confirm("Queres restaurar estes registos para a semana atual? Os dados atuais serão substituídos.")) return;
-            registos = historicoCarregado[index].registos || [];
+            if (!confirm("Queres restaurar estes registos para a semana atual? Os dados atuais serão substituídos e esta semana sairá do arquivo.")) return;
+
+            const semana = historicoCarregado[index];
+            registos = semana.registos || [];
             renderizar();
             await salvarDados();
+
+            if (semana.id) {
+                await sbClient.from('entregas_historico').delete().eq('id', semana.id);
+            }
+
             document.getElementById('modalHistoryOverlay').classList.remove('active');
-            alert("Semana restaurada com sucesso!");
+            alert("Semana restaurada e removida do histórico com sucesso!");
         }
 
+        // FECHAR SEMANA COM DATA DO DOMINGO MAIS PRÓXIMO
         async function fecharSemana() {
             if (registos.length === 0) return alert("Sem pedidos para arquivar.");
             if (!confirm("Arquivar esta semana e colocar o painel a zeros?")) return;
 
             const totais = calcularTotais(registos);
             const hoje = new Date();
-            const semanaFim = `${hoje.getDate()}/${hoje.getMonth() + 1}/${hoje.getFullYear()}`;
+
+            const diaDaSemana = hoje.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+            const diasParaTras = diaDaSemana === 0 ? 0 : diaDaSemana;
+            const diasParaFrente = diaDaSemana === 0 ? 0 : (7 - diaDaSemana);
+
+            // Se empatar ou for menor para trás, escolhe o domingo anterior; caso contrário, o próximo
+            const delta = diasParaTras <= diasParaFrente ? -diasParaTras : diasParaFrente;
+
+            const domingoMaisProximo = new Date(hoje);
+            domingoMaisProximo.setDate(hoje.getDate() + delta);
+
+            const diaStr = String(domingoMaisProximo.getDate()).padStart(2, '0');
+            const mesStr = String(domingoMaisProximo.getMonth() + 1).padStart(2, '0');
+            const semanaFim = `${diaStr}/${mesStr}/${domingoMaisProximo.getFullYear()}`;
 
             if (utilizadorAtual) {
                 await sbClient.from('entregas_historico').insert([{
@@ -1353,11 +1402,13 @@
             registos = [];
             renderizar();
             await salvarDados();
-            alert("Semana limpa e arquivada!");
+            alert(`Semana arquivada com sucesso referente a Domingo (${semanaFim})!`);
         }
 
-        // --- MODO ADMIN ---
+        // ================= MODO ADMIN (COM ARQUIVO / HISTÓRICO) =================
         let adminUsersCache = [];
+        let estafetaAdminAtivo = null;
+        let historicoEstafetaAdmin = [];
 
         async function abrirModalAdmin() {
             document.getElementById('modalAdminOverlay').classList.add('active');
@@ -1387,53 +1438,88 @@
                     const userIdCurto = item.user_id.substring(0, 8);
 
                     html += `
-                        <div class="dense-row" style="height:44px;">
-                            <div class="dense-left">
-                                <span class="dense-name">👤 ID: ${userIdCurto}</span>
-                                <span class="dense-day">${totalPed} pedidos</span>
-                            </div>
-                            <div class="dense-right">
-                                <span class="dense-taxa">${totais.lucro.toFixed(1)}€</span>
-                                <button class="nav-btn" style="border-color:rgba(245,158,11,0.4); color:#fbbf24; background:rgba(245,158,11,0.15); padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
-                            </div>
+                    <div class="dense-row" style="height:44px;">
+                        <div class="dense-left">
+                            <span class="dense-name">👤 ID: ${userIdCurto}</span>
+                            <span class="dense-day">${totalPed} pedidos ativos</span>
                         </div>
-                    `;
+                        <div class="dense-right">
+                            <span class="dense-taxa">${totais.lucro.toFixed(1)}€</span>
+                            <button class="nav-btn" style="border-color:rgba(245,158,11,0.4); color:#fbbf24; background:rgba(245,158,11,0.15); padding:4px 8px; font-size:0.72rem;" onclick="verEstafetaAdmin(${idx})">Ver</button>
+                        </div>
+                    </div>
+                `;
                 });
                 html += `</div>`;
                 areaGeral.innerHTML = html;
             } catch (e) {
                 console.error("Erro completo:", e);
                 areaGeral.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px 0; font-size:0.8rem;">
-                    Erro: ${e.message || JSON.stringify(e)}
-                </p>`;
+                Erro: ${e.message || JSON.stringify(e)}
+            </p>`;
             }
         }
 
         function verEstafetaAdmin(idx) {
-            const estafeta = adminUsersCache[idx];
+            estafetaAdminAtivo = adminUsersCache[idx];
+            historicoEstafetaAdmin = [];
+
             const areaGeral = document.getElementById('adminAreaGeral');
             const areaDetalhe = document.getElementById('adminAreaDetalhe');
-            const lista = estafeta.registos || [];
-            const totais = calcularTotais(lista);
-            const adar = formatarValorAdar(totais.adar);
 
             areaGeral.style.display = 'none';
             areaDetalhe.style.display = 'block';
 
+            renderizarDetalheEstafetaAdmin('atual');
+        }
+
+        function renderizarDetalheEstafetaAdmin(aba = 'atual') {
+            const areaDetalhe = document.getElementById('adminAreaDetalhe');
+            const estafeta = estafetaAdminAtivo;
+            const userIdCurto = estafeta.user_id.substring(0, 8);
+
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <button class="nav-btn" onclick="voltarListaAdmin()">⬅️ Voltar</button>
-                    <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ID: ${estafeta.user_id.substring(0, 8)}</span>
-                </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <button class="nav-btn" onclick="voltarListaAdmin()">⬅️ Voltar</button>
+                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ID: ${userIdCurto}</span>
+            </div>
 
-                <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
-                    <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
-                    <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
-                    <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
-                </div>
+            <div class="admin-tabs">
+                <button class="admin-tab ${aba === 'atual' ? 'active' : ''}" onclick="alternarAbaAdmin('atual')">Semana Atual</button>
+                <button class="admin-tab ${aba === 'arquivo' ? 'active' : ''}" onclick="alternarAbaAdmin('arquivo')">📜 Arquivo</button>
+            </div>
 
-                <div class="dense-list">
-            `;
+            <div id="adminConteudoAba"></div>
+        `;
+
+            areaDetalhe.innerHTML = html;
+
+            if (aba === 'atual') {
+                renderizarSemanaAtualAdmin();
+            } else {
+                carregarHistoricoEstafetaAdmin();
+            }
+        }
+
+        function alternarAbaAdmin(aba) {
+            renderizarDetalheEstafetaAdmin(aba);
+        }
+
+        function renderizarSemanaAtualAdmin() {
+            const container = document.getElementById('adminConteudoAba');
+            const lista = estafetaAdminAtivo.registos || [];
+            const totais = calcularTotais(lista);
+            const adar = formatarValorAdar(totais.adar);
+
+            let html = `
+            <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+            </div>
+
+            <div class="dense-list">
+        `;
 
             if (lista.length === 0) {
                 html += `<p style="text-align:center; color:var(--text-muted); padding:15px 0;">Sem pedidos ativos nesta conta.</p>`;
@@ -1444,32 +1530,146 @@
                     const diaCurto = r.dia.split('-')[0];
 
                     html += `
-                        <div class="dense-row">
-                            <div class="dense-left">
-                                <span class="dense-name">${r.local}</span>
-                                <div class="dense-values">
-                                    <span class="val-pagou">Pagou ${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
-                                    <span class="val-sep">/</span>
-                                    <span class="val-paguei">Paguei ${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
-                                </div>
-                                <span class="dense-day">· ${diaCurto}</span>
+                    <div class="dense-row">
+                        <div class="dense-left">
+                            <span class="dense-name">${r.local}</span>
+                            <div class="dense-values">
+                                <span class="val-pagou">Pagou ${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                <span class="val-sep">/</span>
+                                <span class="val-paguei">Paguei ${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
                             </div>
-                            <div class="dense-right">
-                                <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
-                                <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
-                            </div>
+                            <span class="dense-day">· ${diaCurto}</span>
                         </div>
-                    `;
+                        <div class="dense-right">
+                            <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                        </div>
+                    </div>
+                `;
                 });
             }
 
             html += `</div>`;
-            areaDetalhe.innerHTML = html;
+            container.innerHTML = html;
+        }
+
+        async function carregarHistoricoEstafetaAdmin() {
+            const container = document.getElementById('adminConteudoAba');
+            container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">A carregar semanas arquivadas...</p>`;
+
+            try {
+                const { data, error } = await sbClient
+                    .from('entregas_historico')
+                    .select('*')
+                    .eq('user_id', estafetaAdminAtivo.user_id)
+                    .order('criado_em', { ascending: false });
+
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px 0;">Nenhuma semana arquivada para este estafeta.</p>`;
+                    return;
+                }
+
+                historicoEstafetaAdmin = data;
+
+                container.innerHTML = data.map((item, index) => `
+                <div style="background:rgba(8, 13, 26, 0.7); padding:10px 12px; border-radius:14px; margin-bottom:8px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center; gap: 8px;">
+                    <div style="min-width:0; flex:1;">
+                        <b style="font-size: 0.9rem;">📅 Semana ${item.semana_fim}</b>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                            Lucro: <span style="color:#fbbf24; font-weight:700;">${item.resumo?.lucro_total || '0.00€'}</span> | Pedidos: ${item.resumo?.total_pedidos || 0}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-shrink:0;">
+                        <button class="nav-btn nav-btn-history" onclick="abrirDetalheSemanaAdmin(${index})">👁 Ver</button>
+                        <button class="nav-btn nav-btn-reset" onclick="eliminarSemanaAdmin(${index})">🗑</button>
+                    </div>
+                </div>
+            `).join('');
+            } catch (e) {
+                container.innerHTML = `<p style="text-align:center; color:var(--accent-danger); padding:20px;">Erro ao carregar semanas arquivadas.</p>`;
+            }
+        }
+
+        function abrirDetalheSemanaAdmin(index) {
+            const semana = historicoEstafetaAdmin[index];
+            const container = document.getElementById('adminConteudoAba');
+            const lista = semana.registos || [];
+            const totais = calcularTotais(lista);
+            const adar = formatarValorAdar(totais.adar);
+
+            let html = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <button class="nav-btn" onclick="renderizarDetalheEstafetaAdmin('arquivo')">⬅️ Voltar</button>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:0.78rem; font-weight:700; color:#fbbf24;">Semana ${semana.semana_fim}</span>
+                    <button class="nav-btn nav-btn-reset" onclick="eliminarSemanaAdmin(${index}, true)">🗑 Apagar</button>
+                </div>
+            </div>
+
+            <div style="background:rgba(8, 13, 26, 0.7); padding:8px; border-radius:14px; border:1px solid var(--card-border); margin-bottom:10px; display:grid; grid-template-columns:repeat(3, 1fr); text-align:center; font-size:0.78rem;">
+                <div><small style="color:var(--text-muted);">Lucro</small><br><b style="color:#fbbf24;">${totais.lucro.toFixed(2)}€</b></div>
+                <div><small style="color:var(--text-muted);">A Dar</small><br><b class="${adar.classe}">${adar.texto}</b></div>
+                <div><small style="color:var(--text-muted);">Total</small><br><b>${totais.total.toFixed(2)}€</b></div>
+            </div>
+
+            <div class="dense-list">
+        `;
+
+            if (lista.length === 0) {
+                html += `<p style="text-align:center; color:var(--text-muted); padding:15px 0;">Sem pedidos registados nesta semana.</p>`;
+            } else {
+                lista.forEach(r => {
+                    const valTaxas = (parseFloat(r.pagou) || 0) - (parseFloat(r.paguei) || 0);
+                    const adarPedido = formatarValorAdar(valTaxas - (parseFloat(r.taxaEntrega) || 0));
+                    const diaCurto = r.dia ? r.dia.split('-')[0] : '';
+
+                    html += `
+                    <div class="dense-row">
+                        <div class="dense-left">
+                            <span class="dense-name">${r.local}</span>
+                            <div class="dense-values">
+                                <span class="val-pagou">Pagou ${(parseFloat(r.pagou) || 0).toFixed(1)}€</span>
+                                <span class="val-sep">/</span>
+                                <span class="val-paguei">Paguei ${(parseFloat(r.paguei) || 0).toFixed(1)}€</span>
+                            </div>
+                            <span class="dense-day">· ${diaCurto}</span>
+                        </div>
+                        <div class="dense-right">
+                            <span class="dense-taxa">+${(parseFloat(r.taxaEntrega) || 0).toFixed(1)}€</span>
+                            <span class="dense-adar ${adarPedido.classe}">${adarPedido.texto}</span>
+                        </div>
+                    </div>
+                `;
+                });
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        async function eliminarSemanaAdmin(index, estavaNoDetalhe = false) {
+            const semana = historicoEstafetaAdmin[index];
+            if (!confirm(`Tens a certeza que queres eliminar permanentemente a Semana ${semana.semana_fim}?`)) return;
+
+            try {
+                const { error } = await sbClient
+                    .from('entregas_historico')
+                    .delete()
+                    .eq('id', semana.id);
+
+                if (error) throw error;
+
+                alert("Semana eliminada com sucesso!");
+                carregarHistoricoEstafetaAdmin();
+            } catch (e) {
+                alert("Erro ao eliminar semana: " + (e.message || JSON.stringify(e)));
+            }
         }
 
         function voltarListaAdmin() {
             document.getElementById('adminAreaDetalhe').style.display = 'none';
             document.getElementById('adminAreaGeral').style.display = 'block';
+            estafetaAdminAtivo = null;
         }
 
         function fecharModalFora(e, id) {
