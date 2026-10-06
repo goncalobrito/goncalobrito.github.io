@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Os Meus Projetos</title>
+    <!-- Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-neutral-900 antialiased">
+
+    <main class="w-full max-w-2xl mx-auto flex flex-col items-center">
+        
+        <!-- Cabeçalho subtil e minimalista -->
+        <header class="text-center mb-8">
+            <h1 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-1">Portefólio</h1>
+            <p class="text-lg font-medium text-neutral-800">Escolhe um projeto para abrir</p>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+
+            <!-- 1. PROJETO: INSULINA -->
+            <a href="https://teu-link-insulina.com" target="_blank"
+               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-teal-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
+                <!-- Miniatura -->
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-teal-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-teal-200 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=200&q=80" 
+                         alt="Insulina" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                         onerror="this.src='https://placehold.co/100x100/0d9488/ffffff?text=Saude'">
+                </div>
+                <!-- Conteúdo de texto -->
+                <div class="ml-4 flex-1">
+                    <span class="text-xs font-medium text-teal-600 block mb-0.5">Saúde & Bem-estar</span>
+                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-teal-700 transition-colors">INSULINA</h2>
+                </div>
+                <!-- Seta de redirecionamento -->
+                <div class="text-neutral-300 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all mr-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- 2. PROJETO: JOGO QUINTA -->
+            <a href="https://teu-link-jogo-quinta.com" target="_blank"
+               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-emerald-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
+                <!-- Miniatura -->
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-emerald-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-emerald-200 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=200&q=80" 
+                         alt="Jogo Quinta" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                         onerror="this.src='https://placehold.co/100x100/059669/ffffff?text=Quinta'">
+                </div>
+                <!-- Conteúdo de texto -->
+                <div class="ml-4 flex-1">
+                    <span class="text-xs font-medium text-emerald-600 block mb-0.5">Mini-Jogo</span>
+                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-emerald-700 transition-colors">JOGO QUINTA</h2>
+                </div>
+                <!-- Seta de redirecionamento -->
+                <div class="text-neutral-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all mr-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- 3. PROJETO: ENTREGAS ESTAFETA -->
+            <a href="https://teu-link-estafeta.com" target="_blank"
+               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-amber-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
+                <!-- Miniatura -->
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-amber-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-amber-200 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=200&q=80" 
+                         alt="Entregas Estafeta" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                         onerror="this.src='https://placehold.co/100x100/d97706/ffffff?text=Estafeta'">
+                </div>
+                <!-- Conteúdo de texto -->
+                <div class="ml-4 flex-1">
+                    <span class="text-xs font-medium text-amber-600 block mb-0.5">Logística & App</span>
+                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-amber-700 transition-colors">ENTREGAS ESTAFETA</h2>
+                </div>
+                <!-- Seta de redirecionamento -->
+                <div class="text-neutral-300 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all mr-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- 4. PROJETO: XSHOES -->
+            <a href="https://teu-link-xshoes.com" target="_blank"
+               class="group flex items-center p-3.5 rounded-2xl border border-blue-200 bg-blue-50/20 hover:border-blue-600 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
+                <!-- Miniatura -->
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-blue-50 flex-shrink-0 flex items-center justify-center border border-blue-100 group-hover:border-blue-300 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=200&q=80" 
+                         alt="XShoes Sneakers" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                         onerror="this.src='https://placehold.co/100x100/2563eb/ffffff?text=XShoes'">
+                </div>
+                <!-- Conteúdo de texto -->
+                <div class="ml-4 flex-1">
+                    <span class="text-xs font-medium text-blue-600 block mb-0.5">Sneakers Store</span>
+                    <h2 class="text-base font-bold text-blue-800 group-hover:text-blue-900 transition-colors">XSHOES</h2>
+                </div>
+                <!-- Seta de redirecionamento -->
+                <div class="text-blue-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all mr-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+
+        </div>
+
+        <p class="text-xs text-neutral-400 mt-8">
+            Dica: Edita os atributos <code class="bg-neutral-100 px-1 py-0.5 rounded text-neutral-600">href="..."</code> com os teus links finais.
+        </p>
+
+    </main>
+
+</body>
+</html>
