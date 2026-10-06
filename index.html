@@ -1,127 +1,313 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Os Meus Projetos</title>
-    <!-- Tailwind CSS para estilização rápida e responsiva -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #ffffff;
+
+<html lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gonçalo Brito — Portfólio &amp; Projetos</title>
+<!-- Tailwind CSS CDN com plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          },
+          colors: {
+            canvas: '#0a0a0c',
+            surface: '#13151b',
+            surfaceHover: '#181b22',
+            borderSubtle: 'rgba(255, 255, 255, 0.08)'
+          }
         }
-    </style>
+      }
+    }
+  </script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-layout">
+    body {
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+      background-color: #0a0a0c;
+    }
+    
+    /* Background subtle ambient grid/glow */
+    .bg-grid-ambient {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Transições suaves e efeitos de glow por projeto */
+    .project-row {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .action-circle {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Glows customizados de hover por card */
+    .card-accent-amber:hover {
+      border-color: rgba(255, 107, 53, 0.45);
+      box-shadow: 0 10px 30px -10px rgba(255, 107, 53, 0.2);
+    }
+    .group:hover .circle-amber {
+      border-color: #FF6B35;
+      background-color: #FF6B35;
+      color: #0a0a0c;
+      box-shadow: 0 0 24px rgba(255, 107, 53, 0.45);
+      transform: scale(1.05);
+    }
+
+    .card-accent-cyan:hover {
+      border-color: rgba(0, 229, 255, 0.45);
+      box-shadow: 0 10px 30px -10px rgba(0, 229, 255, 0.2);
+    }
+    .group:hover .circle-cyan {
+      border-color: #00E5FF;
+      background-color: #00E5FF;
+      color: #0a0a0c;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.45);
+      transform: scale(1.05);
+    }
+
+    .card-accent-emerald:hover {
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
+    }
+    .group:hover .circle-emerald {
+      border-color: #10B981;
+      background-color: #10B981;
+      color: #0a0a0c;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.45);
+      transform: scale(1.05);
+    }
+
+    .card-accent-purple:hover {
+      border-color: rgba(168, 85, 247, 0.45);
+      box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.2);
+    }
+    .group:hover .circle-purple {
+      border-color: #A855F7;
+      background-color: #A855F7;
+      color: #0a0a0c;
+      box-shadow: 0 0 24px rgba(168, 85, 247, 0.45);
+      transform: scale(1.05);
+    }
+
+    .group:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-neutral-900 antialiased">
-
-    <main class="w-full max-w-2xl mx-auto flex flex-col items-center">
-        
-        <!-- Cabeçalho subtil e minimalista -->
-        <header class="text-center mb-8">
-            <h1 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-1">Portefólio</h1>
-            <p class="text-lg font-medium text-neutral-800">Escolhe um projeto para abrir</p>
-        </header>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-
-            <!-- 1. PROJETO: INSULINA -->
-            <a href="https://goncalobrito.github.io/insulina" target="_blank"
-               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-teal-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
-                <!-- Miniatura -->
-                <div class="w-16 h-16 rounded-xl overflow-hidden bg-teal-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-teal-200 transition-colors">
-                    <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=200&q=80" 
-                         alt="Insulina" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                         onerror="this.src='https://placehold.co/100x100/0d9488/ffffff?text=Saude'">
-                </div>
-                <!-- Conteúdo de texto -->
-                <div class="ml-4 flex-1">
-                    <span class="text-xs font-medium text-teal-600 block mb-0.5">Saúde & Bem-estar</span>
-                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-teal-700 transition-colors">INSULINA</h2>
-                </div>
-                <!-- Seta de redirecionamento -->
-                <div class="text-neutral-300 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all mr-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-            </a>
-
-            <!-- 2. PROJETO: JOGO QUINTA -->
-            <a href="https://goncalobrito.github.io/Jogo" target="_blank"
-               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-emerald-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
-                <!-- Miniatura -->
-                <div class="w-16 h-16 rounded-xl overflow-hidden bg-emerald-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-emerald-200 transition-colors">
-                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=200&q=80" 
-                         alt="Jogo Quinta" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                         onerror="this.src='https://placehold.co/100x100/059669/ffffff?text=Quinta'">
-                </div>
-                <!-- Conteúdo de texto -->
-                <div class="ml-4 flex-1">
-                    <span class="text-xs font-medium text-emerald-600 block mb-0.5">Mini-Jogo</span>
-                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-emerald-700 transition-colors">JOGO QUINTA</h2>
-                </div>
-                <!-- Seta de redirecionamento -->
-                <div class="text-neutral-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all mr-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-            </a>
-
-            <!-- 3. PROJETO: ENTREGAS ESTAFETA -->
-            <a href="https://goncalobrito.github.io/pedeja" target="_blank"
-               class="group flex items-center p-3.5 rounded-2xl border border-neutral-200 bg-white hover:border-amber-500 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
-                <!-- Miniatura -->
-                <div class="w-16 h-16 rounded-xl overflow-hidden bg-amber-50 flex-shrink-0 flex items-center justify-center border border-neutral-100 group-hover:border-amber-200 transition-colors">
-                    <img src="https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=200&q=80" 
-                         alt="Entregas Estafeta" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                         onerror="this.src='https://placehold.co/100x100/d97706/ffffff?text=Estafeta'">
-                </div>
-                <!-- Conteúdo de texto -->
-                <div class="ml-4 flex-1">
-                    <span class="text-xs font-medium text-amber-600 block mb-0.5">Logística & App</span>
-                    <h2 class="text-base font-semibold text-neutral-800 group-hover:text-amber-700 transition-colors">ENTREGAS ESTAFETA</h2>
-                </div>
-                <!-- Seta de redirecionamento -->
-                <div class="text-neutral-300 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all mr-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-            </a>
-
-            <!-- 4. PROJETO: XSHOES -->
-            <a href="https://goncalobrito.github.io/Xshoes" target="_blank"
-               class="group flex items-center p-3.5 rounded-2xl border border-blue-200 bg-blue-50/20 hover:border-blue-600 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
-                <!-- Miniatura -->
-                <div class="w-16 h-16 rounded-xl overflow-hidden bg-blue-50 flex-shrink-0 flex items-center justify-center border border-blue-100 group-hover:border-blue-300 transition-colors">
-                    <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=200&q=80" 
-                         alt="XShoes Sneakers" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                         onerror="this.src='https://placehold.co/100x100/2563eb/ffffff?text=XShoes'">
-                </div>
-                <!-- Conteúdo de texto -->
-                <div class="ml-4 flex-1">
-                    <span class="text-xs font-medium text-blue-600 block mb-0.5">Sneakers Store</span>
-                    <h2 class="text-base font-bold text-blue-800 group-hover:text-blue-900 transition-colors">XSHOES</h2>
-                </div>
-                <!-- Seta de redirecionamento -->
-                <div class="text-blue-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all mr-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-            </a>
-
-        </div>
-    </main>
-
-</body>
-</html>
+<body class="bg-canvas text-neutral-100 min-h-screen flex flex-col justify-between selection:bg-neutral-200 selection:text-black relative">
+<!-- Ambient Lighting Background Overlays -->
+<div class="fixed inset-0 bg-grid-ambient pointer-events-none opacity-40 z-0"></div>
+<div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-blue-900/10 via-purple-900/5 to-transparent blur-3xl pointer-events-none z-0"></div>
+<!-- BEGIN: MainHeader -->
+<header class="relative z-10 w-full max-w-6xl mx-auto px-6 pt-12 md:pt-20 pb-8" data-purpose="site-header">
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-8 gap-6">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-950/40 text-xs font-mono uppercase tracking-widest text-emerald-300 mb-4 backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"></span> DISPONÍVEL PARA NOVOS PROJETOS
+      </div>
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white drop-shadow-sm">
+        Gonçalo Brito
+      </h1>
+<p class="mt-3 text-lg md:text-xl text-neutral-400 font-normal">
+        Projetos em Destaque · Arquitetura Frontend &amp; Web Apps
+      </p>
+</div>
+<!-- Links de Contato e Perfil -->
+<div class="flex items-center gap-4 text-sm font-medium">
+<a class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/15 bg-white/5 hover:bg-white hover:text-black text-neutral-200 backdrop-blur-sm transition-all duration-200 hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]" href="https://github.com/goncalobrito" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path>
+</svg>
+<span class="font-mono text-xs tracking-tight">github.com/goncalobrito</span>
+</a>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: ProjectShowcase -->
+<main class="relative z-10 w-full max-w-6xl mx-auto px-6 py-6 md:py-10 flex-grow" data-purpose="projects-list-container">
+<div class="space-y-6 md:space-y-8">
+<!-- ITEM 01: PedeJá -->
+<a aria-label="Acessar projeto PedeJá" class="project-row group flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 cursor-pointer" data-purpose="project-link-card" href="https://goncalobrito.github.io/pedeja" rel="noopener noreferrer" target="_blank">
+<!-- Cartão Principal Dark Elevated -->
+<article class="card-accent-amber flex-grow bg-surface/90 hover:bg-surface border border-white/10 rounded-2xl md:rounded-[24px] p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-300 flex flex-col lg:flex-row justify-between items-stretch gap-6 overflow-hidden">
+<div class="flex flex-col justify-between flex-1">
+<div>
+<div class="flex flex-wrap items-baseline gap-3 mb-2">
+<span class="font-mono text-xs sm:text-sm text-[#FF6B35] font-semibold tracking-wider bg-[#FF6B35]/10 px-2 py-0.5 rounded border border-[#FF6B35]/30">01</span>
+<h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-white group-hover:text-[#FF6B35] transition-colors">
+              PedeJá
+            </h2>
+</div>
+<p class="text-neutral-400 mt-2 text-sm sm:text-base leading-relaxed max-w-xl">
+            Plataforma digital para pedidos e entregas de comida online, com interface otimizada para navegação rápida de ementas e fluxo de checkout intuitivo.
+          </p>
+</div>
+<!-- Tags com accent styling -->
+<div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-white/5">
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10 group-hover:border-[#FF6B35]/40 transition-colors">Web App</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-[#FF6B35]/10 text-[#FF8552] border border-[#FF6B35]/25">Delivery</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10">Food Ordering</span>
+</div>
+</div>
+<!-- Thumbnail Banner Image -->
+<div class="w-full lg:w-72 xl:w-80 h-40 sm:h-44 rounded-xl overflow-hidden border border-white/10 bg-black/40 shrink-0 relative group/img">
+<img alt="Modern UI mockup preview of a sleek food delivery and online ordering web app interface named PedeJá" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgKftOF-IYJtm7vLeNI7rr5slG_pbFlKCmwoqmQFln8My-qjmY780HJoUPPNXJ5KKjNRKDOfchSKGUD-jGw9rtkONts4vMbbr8ExGlm1kRrwTh7MbCb8RzW4u0I_tZGqDb27S74e5Urnz-vzxRx3NqD7Ic-NQcAF4UYyUe_M3YqX7OJDmV6iRzvWb7O5kQhcwiRI5Gn_Xd75swHhoUnZ7MS--u9SB4W0IbpIxqynETZ2VUv2dXGm-a_w"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+</div>
+</article>
+<!-- Botão Circular Independente à Direita -->
+<div class="flex justify-end md:justify-center items-center">
+<div class="action-circle circle-amber w-14 h-14 md:w-20 md:h-20 rounded-full border border-white/15 bg-surface flex items-center justify-center shrink-0 text-white">
+<svg aria-hidden="true" class="arrow-icon w-6 h-6 md:w-8 md:h-8 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+<!-- ITEM 02: Xshoes -->
+<a aria-label="Acessar projeto Xshoes" class="project-row group flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 cursor-pointer" data-purpose="project-link-card" href="https://goncalobrito.github.io/Xshoes" rel="noopener noreferrer" target="_blank">
+<!-- Cartão Principal Dark Elevated -->
+<article class="card-accent-cyan flex-grow bg-surface/90 hover:bg-surface border border-white/10 rounded-2xl md:rounded-[24px] p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-300 flex flex-col lg:flex-row justify-between items-stretch gap-6 overflow-hidden">
+<div class="flex flex-col justify-between flex-1">
+<div>
+<div class="flex flex-wrap items-baseline gap-3 mb-2">
+<span class="font-mono text-xs sm:text-sm text-[#00E5FF] font-semibold tracking-wider bg-[#00E5FF]/10 px-2 py-0.5 rounded border border-[#00E5FF]/30">02</span>
+<h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-white group-hover:text-[#00E5FF] transition-colors">
+              Xshoes
+            </h2>
+</div>
+<p class="text-neutral-400 mt-2 text-sm sm:text-base leading-relaxed max-w-xl">
+            Loja virtual contemporânea desenhada para calçado desportivo e sneakers exclusivos, integrando catálogo visualmente rico e experiência de compra fluida.
+          </p>
+</div>
+<!-- Tags com accent styling -->
+<div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-white/5">
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/25">E-commerce</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10 group-hover:border-[#00E5FF]/40 transition-colors">Sneakers</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10">Retail UI</span>
+</div>
+</div>
+<!-- Thumbnail Banner Image -->
+<div class="w-full lg:w-72 xl:w-80 h-40 sm:h-44 rounded-xl overflow-hidden border border-white/10 bg-black/40 shrink-0 relative group/img">
+<img alt="Modern e-commerce product showcase preview for Xshoes, stylish trending sneakers on a sleek dark pedestal" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5wg-ISByIs8jf-oSrQvaSGomd6P09F9HejLkA0hxupaAak0RWe3JucN3PskX6fXGxmGqoyRfMarVp73o_BLJ5Yyq7wRiIE5uoAkamhQM8EkuVXwIF7e5min9KNkHtgZmq1znefffI1xZ9NkGSMhOdEjQmPKhm3TsOYbzyESbGUs4USHYQRv4DZZ2xRDn4GRV5fn8_gJf2T2QRXK6zAgpiVosnf39Mwz0nGZt4RmQRZCyEmBX1XcyrKA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+</div>
+</article>
+<!-- Botão Circular Independente à Direita -->
+<div class="flex justify-end md:justify-center items-center">
+<div class="action-circle circle-cyan w-14 h-14 md:w-20 md:h-20 rounded-full border border-white/15 bg-surface flex items-center justify-center shrink-0 text-white">
+<svg aria-hidden="true" class="arrow-icon w-6 h-6 md:w-8 md:h-8 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+<!-- ITEM 03: Insulina -->
+<a aria-label="Acessar projeto Insulina" class="project-row group flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 cursor-pointer" data-purpose="project-link-card" href="https://goncalobrito.github.io/insulina" rel="noopener noreferrer" target="_blank">
+<!-- Cartão Principal Dark Elevated -->
+<article class="card-accent-emerald flex-grow bg-surface/90 hover:bg-surface border border-white/10 rounded-2xl md:rounded-[24px] p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-300 flex flex-col lg:flex-row justify-between items-stretch gap-6 overflow-hidden">
+<div class="flex flex-col justify-between flex-1">
+<div>
+<div class="flex flex-wrap items-baseline gap-3 mb-2">
+<span class="font-mono text-xs sm:text-sm text-[#10B981] font-semibold tracking-wider bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/30">03</span>
+<h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-white group-hover:text-[#10B981] transition-colors">
+              Insulina
+            </h2>
+</div>
+<p class="text-neutral-400 mt-2 text-sm sm:text-base leading-relaxed max-w-xl">
+            Solução de monitorização e cálculo de dosagem de glicemia e insulina, focada na precisão de dados, acessibilidade e apoio à gestão diária da diabetes.
+          </p>
+</div>
+<!-- Tags com accent styling -->
+<div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-white/5">
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-[#10B981]/10 text-[#34D399] border border-[#10B981]/25">HealthTech</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10 group-hover:border-[#10B981]/40 transition-colors">Monitorização</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10">Ferramenta Médica</span>
+</div>
+</div>
+<!-- Thumbnail Banner Image -->
+<div class="w-full lg:w-72 xl:w-80 h-40 sm:h-44 rounded-xl overflow-hidden border border-white/10 bg-black/40 shrink-0 relative group/img">
+<img alt="HealthTech medical monitoring dashboard preview named Insulina" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBSJV70T2gbQSpCOm48DFj0CGEHoyTGnaD50nSDIlQpz8eaW_ekPaIy_GpY065YvRT5PXMOpmz2WjoTuckTzmFGEX__PrPy6N3ViIkTDEAWwe3qH62-8oF0bBk9SzwQU12FfH7n5X1lBSwtfUndg2uydF_KvbIm9Rr37WN9YUgKLcxMxE53R5L_PRJWBnt4766kQcVuhCyFqVxUmrjCOdN9hFhGwnk3NvxTTjCKsoyZEMViUPqTBxECg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+</div>
+</article>
+<!-- Botão Circular Independente à Direita -->
+<div class="flex justify-end md:justify-center items-center">
+<div class="action-circle circle-emerald w-14 h-14 md:w-20 md:h-20 rounded-full border border-white/15 bg-surface flex items-center justify-center shrink-0 text-white">
+<svg aria-hidden="true" class="arrow-icon w-6 h-6 md:w-8 md:h-8 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+<!-- ITEM 04: Jogo -->
+<a aria-label="Acessar projeto Jogo" class="project-row group flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 cursor-pointer" data-purpose="project-link-card" href="https://goncalobrito.github.io/Jogo" rel="noopener noreferrer" target="_blank">
+<!-- Cartão Principal Dark Elevated -->
+<article class="card-accent-purple flex-grow bg-surface/90 hover:bg-surface border border-white/10 rounded-2xl md:rounded-[24px] p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-300 flex flex-col lg:flex-row justify-between items-stretch gap-6 overflow-hidden">
+<div class="flex flex-col justify-between flex-1">
+<div>
+<div class="flex flex-wrap items-baseline gap-3 mb-2">
+<span class="font-mono text-xs sm:text-sm text-[#C084FC] font-semibold tracking-wider bg-[#A855F7]/10 px-2 py-0.5 rounded border border-[#A855F7]/30">04</span>
+<h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-white group-hover:text-[#C084FC] transition-colors">
+              Jogo
+            </h2>
+</div>
+<p class="text-neutral-400 mt-2 text-sm sm:text-base leading-relaxed max-w-xl">
+            Jogo interativo desenvolvido para navegador com recurso a JavaScript nativo, mecânicas lúdicas envolventes e resposta em tempo real.
+          </p>
+</div>
+<!-- Tags com accent styling -->
+<div class="flex flex-wrap gap-2 mt-4 pt-3 border-t border-white/5">
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-[#A855F7]/15 text-[#D8B4FE] border border-[#A855F7]/30">Game Dev</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10 group-hover:border-[#A855F7]/40 transition-colors">Web Game</span>
+<span class="text-xs font-mono px-2.5 py-1 rounded bg-white/5 text-neutral-300 border border-white/10">Interativo</span>
+</div>
+</div>
+<!-- Thumbnail Banner Image -->
+<div class="w-full lg:w-72 xl:w-80 h-40 sm:h-44 rounded-xl overflow-hidden border border-white/10 bg-black/40 shrink-0 relative group/img">
+<img alt="Dynamic modern browser web game screen preview named Jogo" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPMfSQ3yyxLAeZAOs3o2yIJHaAj26_o1RHU_549dAYzHVLvjm6sdp9znrHC9jlckE0tKJTbHUb5TfC3UJd5P9qF3HgkA3EH-vYySxaoxVSu7Q9TgICOdnGBf3TlCGzLvBRfCRgx53lInqFPjI-FPz0dUg1E46_lWw66QciD6L-_S6BUB2YCJnTYL7QyVw3B4P7LEWSGVuv16Wiubl8FSGt6rF5bKKAz5gsUsOB_Fxm-XFU_7Z5BO_GfQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+</div>
+</article>
+<!-- Botão Circular Independente à Direita -->
+<div class="flex justify-end md:justify-center items-center">
+<div class="action-circle circle-purple w-14 h-14 md:w-20 md:h-20 rounded-full border border-white/15 bg-surface flex items-center justify-center shrink-0 text-white">
+<svg aria-hidden="true" class="arrow-icon w-6 h-6 md:w-8 md:h-8 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+</div>
+</main>
+<!-- END: ProjectShowcase -->
+<!-- BEGIN: MainFooter -->
+<footer class="relative z-10 w-full max-w-6xl mx-auto px-6 py-12 border-t border-white/10 mt-12 text-xs font-mono text-neutral-500" data-purpose="site-footer">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+<div>
+<span>© <span id="current-year">2026</span> Gonçalo Brito. Todos os direitos reservados.</span>
+</div>
+<div class="flex items-center gap-6">
+<a class="hover:text-white transition-colors" href="https://github.com/goncalobrito" rel="noopener noreferrer" target="_blank">GitHub</a>
+<a class="hover:text-white transition-colors" href="mailto:goncalobrito24@gmail.com">Contato</a>
+</div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+<!-- Atualização dinâmica do ano no rodapé -->
+<script data-purpose="footer-date-script">
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+</body></html>
