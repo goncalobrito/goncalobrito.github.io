@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Break+</title>
+
+  <!-- Favicon para a Tab Bar do Navegador -->
+  <link rel="icon" type="image/png" href="icon-512.png">
+
+  <!-- Configurações para iOS (Home Screen / Safari PWA) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Break+">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+  <!-- Configurações para Android / Chrome PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f6efe7">
+
+  <!-- Web App Manifest (gerado dinamicamente via Data URI) -->
+  <link rel="manifest" href='data:application/manifest+json,{
+    "name": "Break+",
+    "short_name": "Break+",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#f6efe7",
+    "theme_color": "#f6efe7",
+    "icons": [
+      {
+        "src": "icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ]
+  }'>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f6efe7;
+      color: #2b313d;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .preview-card {
+      background: #ffffff;
+      padding: 32px 24px;
+      border-radius: 28px;
+      box-shadow: 0 12px 32px rgba(43, 49, 61, 0.08);
+      max-width: 340px;
+      width: 100%;
+    }
+
+    .app-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 26px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #6c757d;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-card">
+    <!-- Garante que a imagem está na mesma pasta com o nome icon-512.png -->
+    <img src="icon-512.png" alt="Ícone Break+" class="app-icon">
+    <h1>Break+</h1>
+    <p>Adiciona esta página ao ecrã principal do telemóvel para instalar a aplicação.</p>
+  </div>
+
+  <script>
+    // Registo de Service Worker básico para suporte PWA
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        self.addEventListener('install', (e) => self.skipWaiting());
+        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob));
+    }
+  </script>
+</body>
+</html>
